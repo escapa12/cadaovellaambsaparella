@@ -184,5 +184,117 @@ const LEVELS = [
       { id: "senyals", n: 5 }
     ],
     columnes: [3, 4, 5, 6, 7, 8]
+  },
+  {
+    nom: "Escapada de cap de setmana",
+    moviments: 104,
+    espais: 4,
+    win_ratio: 0.45,
+    families: [
+      { id: "residencies", n: 6 },
+      { id: "capitals", n: 7 },
+      { id: "paisos", n: 6 },
+      { id: "vehicles", n: 6 },
+      { id: "begudes", n: 5 },
+      { id: "temps", n: 5 },
+      { id: "festes", n: 5 },
+      { id: "roba", n: 4 },
+      { id: "cuina", n: 3 }
+    ],
+    columnes: [3, 4, 5, 6, 7, 8]
+  },
+  {
+    nom: "La lliga",
+    moviments: 121,
+    espais: 4,
+    win_ratio: 0.4,
+    families: [
+      { id: "nba", n: 8 },
+      { id: "esports", n: 6 },
+      { id: "escacs", n: 6 },
+      { id: "musculs", n: 5 },
+      { id: "cos", n: 5 },
+      { id: "marc_granado", n: 6 },
+      { id: "colors", n: 5 },
+      { id: "aina", n: 5 },
+      { id: "ossos", n: 4 }
+    ],
+    columnes: [4, 5, 6, 7, 8]
+  },
+  {
+    nom: "El rebost",
+    moviments: 125,
+    espais: 4,
+    win_ratio: 0.35,
+    families: [
+      { id: "verdures", n: 7 },
+      { id: "cuina", n: 7 },
+      { id: "begudes", n: 6 },
+      { id: "fruites", n: 7 },
+      { id: "mobles", n: 6 },
+      { id: "oficis", n: 6 },
+      { id: "roba", n: 5 },
+      { id: "animals", n: 5 },
+      { id: "festes", n: 3 }
+    ],
+    columnes: [4, 5, 6, 7, 8, 9]
+  },
+  {
+    nom: "Paraulada",
+    moviments: 135,
+    espais: 4,
+    win_ratio: 0.3,
+    families: [
+      { id: "diacritics", n: 8 },
+      { id: "sobreesdruixoles", n: 6 },
+      { id: "capitals", n: 6 },
+      { id: "instruments", n: 6 },
+      { id: "arbres", n: 6 },
+      { id: "temps", n: 6 },
+      { id: "senyals", n: 6 },
+      { id: "ossos", n: 5 },
+      { id: "ma", n: 5 },
+      { id: "colors", n: 4 }
+    ],
+    columnes: [4, 5, 6, 7, 8, 9]
+  },
+  {
+    nom: "Tots els amics",
+    moviments: 144,
+    espais: 4,
+    win_ratio: 0.25,
+    families: [
+      { id: "pau_mas", n: 6 },
+      { id: "marc_granado", n: 8 },
+      { id: "mariona", n: 6 },
+      { id: "lupe", n: 5 },
+      { id: "aina", n: 6 },
+      { id: "residencies", n: 6 },
+      { id: "nba", n: 6 },
+      { id: "joies", n: 6 },
+      { id: "escacs", n: 6 },
+      { id: "senyals", n: 3 }
+    ],
+    columnes: [4, 5, 6, 7, 8]
+  },
+  {
+    nom: "L'infern de les ovelles",
+    moviments: 145,
+    espais: 4,
+    win_ratio: 0.2,
+    families: [
+      { id: "cos", n: 6 },
+      { id: "ossos", n: 6 },
+      { id: "musculs", n: 6 },
+      { id: "diacritics", n: 7 },
+      { id: "animals", n: 6 },
+      { id: "verdures", n: 6 },
+      { id: "colors", n: 6 },
+      { id: "capitals", n: 6 },
+      { id: "paisos", n: 6 },
+      { id: "senyals", n: 5 },
+      { id: "joies", n: 3 }
+    ],
+    columnes: [4, 5, 6, 7, 8, 9]
   }
 ];
