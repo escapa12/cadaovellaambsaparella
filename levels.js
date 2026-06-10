@@ -41,9 +41,9 @@ const LEVELS = [
     espais: 2,
     win_ratio: 0.98,
     families: [
-      { id: "joies", n: 4 },
       { id: "fruites", n: 4 },
-      { id: "animals", n: 4 }
+      { id: "animals", n: 4 },
+      { id: "mobles", n: 4 }
     ],
     columnes: [1, 2, 3]
   },

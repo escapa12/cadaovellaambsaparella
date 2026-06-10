@@ -1,6 +1,8 @@
-# 👑 Solitari de Famílies
+# 🐑 Cada Ovella amb sa Parella
 
 Un joc de mòbil en català: un mix entre el Solitari clàssic i el joc de les famílies de paraules. Fet amb HTML + CSS + JavaScript, sense cap motor de joc ni instal·lació — s'obre directament al navegador.
+
+Dins del joc hi ha la pàgina «❓ Com s'hi juga» amb les regles il·lustrades, accessible des del menú principal i des de qualsevol partida. El mode admin (desbloqueja tots els nivells) demana la contrasenya `1111`.
 
 ## Com es juga
 

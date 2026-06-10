@@ -1,7 +1,7 @@
 {
-  "name": "Solitari de Famílies",
-  "short_name": "Solitari",
-  "description": "Un solitari de paraules en català: agrupa les paraules de cada família!",
+  "name": "Cada Ovella amb sa Parella",
+  "short_name": "Cada Ovella",
+  "description": "Un solitari de paraules en català: cada paraula amb la seva família!",
   "lang": "ca",
   "start_url": ".",
   "display": "standalone",

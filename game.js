@@ -380,7 +380,20 @@ function mostraModal(victoria) {
     botons.appendChild(b);
   };
   if (victoria && !ultimNivell) fes("Següent nivell ▶", "primari", () => nouNivell(estat.nivellIdx + 1));
-  if (!victoria) fes("Torna-ho a provar 🔄", "primari", () => nouNivell(estat.nivellIdx));
+  if (!victoria) {
+    fes("Torna-ho a provar 🔄", "primari", () => nouNivell(estat.nivellIdx));
+    // easter egg: no afegeix res, només demana un Bizum
+    const bizum = document.createElement("button");
+    bizum.className = "btn-modal secundari";
+    bizum.textContent = "Afegeix 5 moviments 💰";
+    bizum.onclick = () => {
+      $("#modal-text").textContent = "Primer fes un Bizum a l'Arnau de 5 euros 😏";
+      bizum.textContent = "Esperant el Bizum... 💸";
+      bizum.disabled = true;
+      bizum.style.opacity = ".6";
+    };
+    botons.appendChild(bizum);
+  }
   if (victoria && ultimNivell) fes("Torna a l'inici 🏠", "primari", vesAInici);
   fes("Inici 🏠", "secundari", vesAInici);
   $("#modal").classList.remove("amagada");
@@ -670,8 +683,36 @@ $("#btn-desfer").addEventListener("click", desfer);
 $("#btn-reiniciar").addEventListener("click", () => nouNivell(estat.nivellIdx));
 $("#btn-inici").addEventListener("click", vesAInici);
 $("#btn-admin").addEventListener("click", () => {
-  localStorage.setItem(clau("admin"), adminActiu() ? "0" : "1");
+  if (adminActiu()) {
+    localStorage.setItem(clau("admin"), "0"); // desactivar no demana contrasenya
+  } else {
+    const pin = prompt("Contrasenya del mode admin:");
+    if (pin !== "1111") { if (pin !== null) alert("Contrasenya incorrecta"); return; }
+    localStorage.setItem(clau("admin"), "1");
+  }
   pintaGraellaNivells();
+});
+
+// ---------- instruccions ----------
+let pantallaAnterior = "inici"; // d'on s'ha obert: "inici" o "joc"
+
+function obreInstruccions(desDe) {
+  pantallaAnterior = desDe;
+  $("#pantalla-inici").classList.add("amagada");
+  $("#pantalla-joc").classList.add("amagada");
+  $("#pantalla-instruccions").classList.remove("amagada");
+}
+
+$("#btn-instruccions-inici").addEventListener("click", () => obreInstruccions("inici"));
+$("#btn-instruccions-joc").addEventListener("click", () => obreInstruccions("joc"));
+$("#btn-tancar-instruccions").addEventListener("click", () => {
+  $("#pantalla-instruccions").classList.add("amagada");
+  if (pantallaAnterior === "joc" && estat && !estat.acabat) {
+    $("#pantalla-joc").classList.remove("amagada");
+  } else {
+    $("#pantalla-inici").classList.remove("amagada");
+    pintaGraellaNivells();
+  }
 });
 $("#btn-esborrar-progres").addEventListener("click", () => {
   if (confirm("Segur que vols esborrar el progrés?")) {
