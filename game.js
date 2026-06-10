@@ -591,6 +591,8 @@ function registraPunter(el, origenBase) {
     const origen = iniciBloc(origenBase);
     const cartes = agafaCartes(origen);
     if (!cartes) { el.classList.add("no-no"); setTimeout(() => el.classList.remove("no-no"), 350); return; }
+    // capturar el punter: així el dit pot sortir de la carta sense perdre el gest
+    try { el.setPointerCapture(e.pointerId); } catch (err) { /* navegadors antics */ }
     // l'element d'on parteix el fantasma és la primera carta del bloc
     const elBloc = origen.tipus === "columna"
       ? document.querySelector(`.carta[data-col="${origen.col}"][data-idx="${origen.idx}"]`) || el
@@ -603,6 +605,22 @@ function registraPunter(el, origenBase) {
     };
   });
 }
+
+// si el sistema cancel·la el gest (trucada, notificació, gest del navegador...),
+// ho deixem tot net perquè cap carta quedi penjada a mig camí
+document.addEventListener("pointercancel", () => {
+  if (!drag) return;
+  const d = drag;
+  drag = null;
+  if (d.fantasma) d.fantasma.remove();
+  mostraOcults();
+  renderitza();
+});
+
+// evitar el menú de pulsació llarga sobre les cartes (interromp l'arrossegament)
+document.addEventListener("contextmenu", (e) => {
+  if (e.target.closest && e.target.closest(".carta, #pila-robar")) e.preventDefault();
+});
 
 document.addEventListener("pointermove", (e) => {
   if (!drag) return;

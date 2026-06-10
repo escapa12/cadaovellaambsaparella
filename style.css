@@ -18,8 +18,13 @@
 }
 
 html, body {
+  /* position:fixed evita el scroll, el rebot i el pull-to-refresh als mòbils */
+  position: fixed;
+  inset: 0;
+  width: 100%;
   height: 100%;
   overflow: hidden;
+  overscroll-behavior: none;
   font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   background: var(--verd-fons);
   background-image: radial-gradient(circle at 50% 0%, #27a35d 0%, var(--verd-fons) 60%);
@@ -27,6 +32,7 @@ html, body {
   -webkit-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
   touch-action: manipulation;
 }
 
@@ -248,6 +254,9 @@ html, body {
   box-shadow: 0 2px 5px rgba(0,0,0,.3);
   cursor: grab;
   padding-top: 4px;
+  /* CLAU per al mòbil: sense això, el navegador converteix
+     l'arrossegament en scroll i cancel·la el gest a mitges */
+  touch-action: none;
 }
 .carta.destapada .paraula {
   font-size: 12px;
