@@ -1,0 +1,188 @@
+// ============================================================
+// CONFIGURACIÓ DELS NIVELLS
+// ============================================================
+// Cada nivell és un objecte amb:
+//
+//   nom:        nom del nivell
+//   moviments:  límit de moviments (robar carta també compta;
+//               família incorrecta resta 1 moviment!)
+//   espais:     quants espais de col·lecció hi ha a dalt
+//               (4 a partir del nivell 5)
+//   win_ratio:  ràtio de victòries esperada (0 a 1). Referència
+//               de dificultat que valida test.js; baixa
+//               gradualment amb els nivells.
+//   families:   quines famílies hi surten i quantes paraules
+//               de cada una, p. ex. { id: "fruites", n: 6 }
+//               (les claus han d'existir a families.js).
+//               Les "n" poden ser ben diferents entre famílies,
+//               amb un màxim de 9.
+//   columnes:   cartes per columna del tauler, en patró
+//               TRIANGULAR: columnes curtes a l'esquerra i
+//               llargues (amb més tapades) a la dreta.
+//               Només la carta de dalt comença destapada.
+//
+// El joc afegeix automàticament 1 carta mestra 👑 per família:
+// el total de cartes és (suma de n) + (nombre de famílies).
+// Les cartes que no caben a les columnes van a la pila de robar
+// (amb moltes famílies, la pila és GRAN: així el nivell dura més).
+//
+// Cada nivell té com a mínim 1 família de dibuixos (les marcades
+// amb dibuixos: true a families.js).
+//
+// Compte: no barregis al mateix nivell famílies que comparteixen
+// una paraula (p. ex. Joies i Mà tenen "Anell");
+// test.js i el mateix joc t'avisaran si passa.
+// ============================================================
+
+const LEVELS = [
+  {
+    nom: "Primeres passes",
+    moviments: 40,
+    espais: 2,
+    win_ratio: 0.98,
+    families: [
+      { id: "joies", n: 4 },
+      { id: "fruites", n: 4 },
+      { id: "animals", n: 4 }
+    ],
+    columnes: [1, 2, 3]
+  },
+  {
+    nom: "Senyals al camí",
+    moviments: 52,
+    espais: 2,
+    win_ratio: 0.95,
+    families: [
+      { id: "senyals", n: 5 },
+      { id: "colors", n: 5 },
+      { id: "vehicles", n: 4 },
+      { id: "esports", n: 4 }
+    ],
+    columnes: [1, 2, 3, 4]
+  },
+  {
+    nom: "Amb el Pau",
+    moviments: 62,
+    espais: 2,
+    win_ratio: 0.92,
+    families: [
+      { id: "escacs", n: 6 },
+      { id: "pau_mas", n: 6 },
+      { id: "begudes", n: 5 },
+      { id: "oficis", n: 5 }
+    ],
+    columnes: [2, 3, 4, 4]
+  },
+  {
+    nom: "Amb la Lupe",
+    moviments: 76,
+    espais: 3,
+    win_ratio: 0.88,
+    families: [
+      { id: "joies", n: 6 },
+      { id: "lupe", n: 5 },
+      { id: "roba", n: 7 },
+      { id: "cuina", n: 5 },
+      { id: "verdures", n: 4 }
+    ],
+    columnes: [2, 3, 4, 5]
+  },
+  {
+    nom: "La volta al món",
+    moviments: 90,
+    espais: 4,
+    win_ratio: 0.84,
+    families: [
+      { id: "paisos", n: 6 },
+      { id: "animals", n: 7 },
+      { id: "instruments", n: 5 },
+      { id: "temps", n: 5 },
+      { id: "capitals", n: 6 },
+      { id: "escacs", n: 4 }
+    ],
+    columnes: [2, 3, 4, 5, 6]
+  },
+  {
+    nom: "El Marc i l'Aina",
+    moviments: 92,
+    espais: 4,
+    win_ratio: 0.8,
+    families: [
+      { id: "marc_granado", n: 8 },
+      { id: "aina", n: 6 },
+      { id: "esports", n: 5 },
+      { id: "arbres", n: 5 },
+      { id: "escacs", n: 5 },
+      { id: "fruites", n: 5 }
+    ],
+    columnes: [2, 3, 4, 5, 6]
+  },
+  {
+    nom: "Set famílies",
+    moviments: 102,
+    espais: 4,
+    win_ratio: 0.74,
+    families: [
+      { id: "senyals", n: 6 },
+      { id: "mobles", n: 8 },
+      { id: "oficis", n: 5 },
+      { id: "begudes", n: 6 },
+      { id: "festes", n: 4 },
+      { id: "joies", n: 4 },
+      { id: "colors", n: 5 },
+      { id: "nba", n: 5 }
+    ],
+    columnes: [3, 4, 5, 5, 6]
+  },
+  {
+    nom: "Nivell dels amics",
+    moviments: 108,
+    espais: 4,
+    win_ratio: 0.7,
+    families: [
+      { id: "pau_mas", n: 5 },
+      { id: "marc_granado", n: 6 },
+      { id: "mariona", n: 6 },
+      { id: "lupe", n: 4 },
+      { id: "aina", n: 5 },
+      { id: "residencies", n: 5 },
+      { id: "ma", n: 4 },
+      { id: "senyals", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7]
+  },
+  {
+    nom: "Anatomia",
+    moviments: 110,
+    espais: 4,
+    win_ratio: 0.62,
+    families: [
+      { id: "cos", n: 6 },
+      { id: "ossos", n: 6 },
+      { id: "musculs", n: 6 },
+      { id: "paisos", n: 5 },
+      { id: "diacritics", n: 6 },
+      { id: "instruments", n: 5 },
+      { id: "verdures", n: 5 }
+    ],
+    columnes: [4, 5, 6, 7, 8]
+  },
+  {
+    nom: "El gran repte",
+    moviments: 130,
+    espais: 4,
+    win_ratio: 0.5,
+    families: [
+      { id: "colors", n: 5 },
+      { id: "vehicles", n: 7 },
+      { id: "temps", n: 5 },
+      { id: "capitals", n: 8 },
+      { id: "festes", n: 5 },
+      { id: "sobreesdruixoles", n: 6 },
+      { id: "escacs", n: 6 },
+      { id: "joies", n: 6 },
+      { id: "senyals", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7, 8]
+  }
+];

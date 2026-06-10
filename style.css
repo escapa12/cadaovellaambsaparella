@@ -1,0 +1,439 @@
+/* ============================================================
+   SOLITARI DE FAMÍLIES — estils
+   ============================================================ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --verd-fons: #1e8a4c;
+  --verd-fosc: #15693a;
+  --crema: #fdf6e3;
+  --crema-fosc: #efe3c2;
+  --blau-carta: #4a90d9;
+  --blau-carta-fosc: #2f6cab;
+  --groc: #ffd34d;
+  --ample-carta: 78px;
+  --alt-carta: 104px;
+  --solapament: 30px;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--verd-fons);
+  background-image: radial-gradient(circle at 50% 0%, #27a35d 0%, var(--verd-fons) 60%);
+  color: #fff;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.pantalla {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.amagada { display: none !important; }
+
+/* ===== PANTALLA D'INICI ===== */
+#pantalla-inici {
+  align-items: center;
+  padding: 40px 20px 20px;
+  overflow-y: auto;
+}
+
+.logo { text-align: center; margin-bottom: 8px; }
+.logo-corona { font-size: 52px; }
+.logo h1 {
+  font-size: 40px;
+  line-height: 1.05;
+  text-shadow: 0 3px 0 rgba(0,0,0,.25);
+}
+.logo h1 span { color: var(--groc); }
+.subtitol { opacity: .85; margin: 10px 0 26px; }
+
+#graella-nivells {
+  display: grid;
+  grid-template-columns: repeat(4, 70px);
+  gap: 14px;
+  margin-bottom: 30px;
+}
+
+.btn-nivell {
+  width: 70px; height: 70px;
+  border: none;
+  border-radius: 16px;
+  background: var(--crema);
+  color: var(--verd-fosc);
+  font-size: 24px;
+  font-weight: 800;
+  box-shadow: 0 4px 0 rgba(0,0,0,.25);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.btn-nivell small { font-size: 10px; font-weight: 600; }
+.btn-nivell:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+.btn-nivell.bloquejat {
+  background: rgba(255,255,255,.18);
+  color: rgba(255,255,255,.55);
+  box-shadow: none;
+  cursor: default;
+}
+.btn-nivell.superat { outline: 3px solid var(--groc); }
+
+.btn-text {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.6);
+  text-decoration: underline;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 8px;
+}
+#btn-admin { margin-top: auto; }
+#btn-admin.admin-actiu { color: var(--groc); font-weight: 700; }
+
+/* ===== CAPÇALERA DE JOC ===== */
+#capçalera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 4px;
+}
+
+#info-nivell { text-align: center; }
+#nom-nivell { font-weight: 700; font-size: 15px; }
+#comptador-moviments { font-size: 13px; opacity: .9; }
+#comptador-moviments b { color: var(--groc); font-size: 16px; }
+#comptador-moviments.alerta b { color: #ff7a6e; }
+
+.btn-icona {
+  width: 42px; height: 42px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(0,0,0,.22);
+  font-size: 19px;
+  cursor: pointer;
+  color: #fff;
+}
+.btn-icona:active { background: rgba(0,0,0,.4); }
+.btn-icona:disabled { opacity: .35; }
+.botons-dreta { display: flex; gap: 8px; }
+
+/* ===== FUNDACIONS ===== */
+#fundacions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 10px;
+}
+
+.fundacio {
+  width: var(--ample-carta);
+  height: var(--alt-carta);
+  border-radius: 10px;
+  position: relative;
+}
+.fundacio.buida {
+  border: 2px dashed rgba(255,255,255,.5);
+  background: rgba(255,255,255,.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  opacity: .8;
+}
+.fundacio.activa {
+  background: var(--crema);
+  color: #5a4a2f;
+  box-shadow: 0 3px 0 rgba(0,0,0,.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px;
+}
+.fundacio.activa .etiqueta {
+  position: absolute;
+  top: -9px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--groc);
+  color: #6b4d00;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 8px;
+  white-space: nowrap;
+  max-width: 95%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fundacio.activa .femoji { font-size: 24px; }
+.fundacio.activa .fcompte { font-size: 13px; font-weight: 800; }
+.fundacio.activa .fparaula {
+  font-size: 9px;
+  opacity: .75;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fundacio.completa { animation: pols .45s ease; }
+
+@keyframes pols {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+/* ===== TAULER ===== */
+#tauler {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 8px;
+  overflow: hidden;
+}
+
+.columna {
+  width: var(--ample-carta);
+  position: relative;
+}
+.columna.buida-col {
+  border: 2px dashed rgba(255,255,255,.35);
+  border-radius: 10px;
+  height: var(--alt-carta);
+}
+
+/* ===== CARTES ===== */
+.carta {
+  width: var(--ample-carta);
+  height: var(--alt-carta);
+  border-radius: 10px;
+  position: absolute;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: top .18s ease;
+}
+
+.carta.tapada {
+  background: linear-gradient(160deg, var(--blau-carta), var(--blau-carta-fosc));
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,.25);
+}
+.carta.tapada::after {
+  content: "❖";
+  margin: auto;
+  color: rgba(255,255,255,.5);
+  font-size: 20px;
+}
+
+.carta.destapada {
+  background: var(--crema);
+  color: #4a3b22;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,.3);
+  cursor: grab;
+  padding-top: 4px;
+}
+.carta.destapada .paraula {
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.1;
+  padding: 1px 3px;
+  max-width: 100%;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+/* cartes amb dibuix (famílies visuals): dibuix gran i centrat */
+.carta.destapada .dibuix {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.carta.destapada .dibuix svg {
+  width: 78%;
+  height: 82%;
+}
+
+/* carta mestra: la que obre la col·lecció de la seva família */
+.carta.mestra {
+  background: linear-gradient(160deg, #ffe084, #f5b73a);
+  border: 2px solid #fff;
+  color: #5a4100;
+}
+.carta.mestra .corona {
+  margin-top: auto;
+  margin-bottom: 6px;
+  font-size: 22px;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.2));
+}
+
+.carta.seleccionada {
+  outline: 3px solid var(--groc);
+  outline-offset: -1px;
+}
+
+.carta.no-no { animation: sacseig .3s ease; }
+@keyframes sacseig {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* fantasma d'arrossegament */
+#fantasma {
+  position: fixed;
+  pointer-events: none;
+  z-index: 100;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,.4));
+}
+#fantasma .carta { position: absolute; transition: none; }
+
+.carta.volant {
+  position: fixed;
+  z-index: 90;
+  transition: all .35s cubic-bezier(.4, 0, .6, 1);
+  margin: 0;
+}
+
+/* ===== ZONA DE ROBAR (a dalt): descart + pila ===== */
+#zona-robar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px 2px;
+  min-height: calc(var(--alt-carta) + 10px);
+}
+
+#descart {
+  position: relative;
+  height: var(--alt-carta);
+  width: calc(var(--ample-carta) + 56px);
+}
+#descart .carta { position: absolute; top: 0; }
+
+#pila-robar {
+  width: var(--ample-carta);
+  height: var(--alt-carta);
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+}
+#pila-robar.amb-cartes {
+  background: linear-gradient(160deg, var(--blau-carta), var(--blau-carta-fosc));
+  border: 2px solid #fff;
+  box-shadow: 0 3px 0 rgba(0,0,0,.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+#pila-robar.amb-cartes:active { transform: translateY(2px); }
+#pila-robar.buida-pila {
+  border: 2px dashed rgba(255,255,255,.4);
+  opacity: .5;
+}
+#pila-robar .compte-pila {
+  position: absolute;
+  top: -7px; right: -7px;
+  background: var(--groc);
+  color: #6b4d00;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 10px;
+  padding: 2px 7px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+
+/* comptador quan es penalitza un moviment */
+#comptador-moviments.penalitzat b {
+  color: #ff5246;
+  animation: pols .45s ease;
+  display: inline-block;
+}
+
+/* ===== MISSATGE FLOTANT ===== */
+#missatge-flotant {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.75);
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 13px;
+  max-width: 85%;
+  text-align: center;
+  z-index: 50;
+  animation: apareix .2s ease;
+}
+@keyframes apareix {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ===== MODAL ===== */
+#modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+#modal-caixa {
+  background: var(--crema);
+  color: #4a3b22;
+  border-radius: 22px;
+  padding: 30px 26px;
+  text-align: center;
+  width: min(320px, 86vw);
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  animation: entraModal .3s cubic-bezier(.3, 1.4, .6, 1);
+}
+@keyframes entraModal {
+  from { transform: scale(.7); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+#modal-emoji { font-size: 56px; }
+#modal-caixa h2 { margin: 8px 0 6px; font-size: 24px; }
+#modal-caixa p { font-size: 14px; opacity: .8; margin-bottom: 20px; }
+#modal-botons { display: flex; flex-direction: column; gap: 10px; }
+
+.btn-modal {
+  border: none;
+  border-radius: 14px;
+  padding: 13px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0,0,0,.2);
+}
+.btn-modal:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+.btn-modal.primari { background: #2eb360; color: #fff; }
+.btn-modal.secundari { background: var(--crema-fosc); color: #6b5a39; }
+
+/* ===== RESPONSIU ===== */
+@media (max-width: 430px) {
+  :root { --solapament: 28px; }
+}

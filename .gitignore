@@ -1,0 +1,8 @@
+# Material de referència (no s'ha de publicar)
+WhatsApp*
+*.mp4
+*.jpeg
+
+# Sistema
+.DS_Store
+node_modules/
