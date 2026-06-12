@@ -113,6 +113,7 @@ function nouNivell(idx) {
     descart: [],
     fundacions: Array(niv.espais).fill(null),
     necessitats,
+    errors: 0,
     recollides: 0,
     totalCartes: baralla.length,
     historial: [],
@@ -297,12 +298,17 @@ function marcaPenalitzacio() {
   setTimeout(() => cm.classList.remove("penalitzat"), 900);
 }
 
-// penalització: -1 moviment i el comptador es pinta de granat un instant
+// penalització PROGRESSIVA: cada 3 errors puja 1 moviment
+// (errors 1-3: −1, errors 4-6: −2, errors 7-9: −3...)
+// retorna el cost aplicat, per mostrar-lo al missatge
 function penalitza() {
-  estat.moviments--;
+  estat.errors = (estat.errors || 0) + 1;
+  const cost = 1 + Math.floor((estat.errors - 1) / 3);
+  estat.moviments -= cost;
   renderitza();
   marcaPenalitzacio();
   comprovaFinal();
+  return cost;
 }
 
 // explica per què un moviment cap a una fundació no és vàlid
@@ -312,7 +318,7 @@ function explicaFundacio(slot, cartes) {
   const teMestra = cartes.some(c => c.mestra);
   const f = estat.fundacions[slot];
   if (f === null && !teMestra) { missatge("🔒 Primer cal la carta mestra 👑 per obrir aquesta col·lecció"); renderitza(); return; }
-  if (f && !teMestra && f.familia !== fam) { missatge("❌ Família incorrecta! (−1 moviment)"); penalitza(); return; }
+  if (f && !teMestra && f.familia !== fam) { const c = penalitza(); missatge(`❌ Família incorrecta! (−${c} ${c === 1 ? "moviment" : "moviments"})`); return; }
   if (f && teMestra) { missatge("👑 La carta mestra només pot obrir un espai buit"); renderitza(); return; }
   missatge("Aquí no hi va, aquesta carta");
   renderitza();
@@ -330,8 +336,8 @@ function explicaColumna(origen, colDesti, cartes) {
   const col = estat.columnes[colDesti];
   const top = col[col.length - 1];
   if (top && top.destapada && top.familia !== cartes[0].familia) {
-    missatge("❌ Família incorrecta! (−1 moviment)");
-    penalitza();
+    const c = penalitza();
+    missatge(`❌ Família incorrecta! (−${c} ${c === 1 ? "moviment" : "moviments"})`);
     return;
   }
   if (top && top.destapada && top.mestra) {
@@ -364,10 +370,14 @@ function comprovaFinal() {
 // ---------- modal ----------
 function mostraModal(victoria) {
   const ultimNivell = estat.nivellIdx === LEVELS.length - 1;
-  $("#modal-emoji").textContent = victoria ? "🏆" : "😅";
-  $("#modal-titol").textContent = victoria ? "Nivell superat!" : "Sense moviments!";
+  $("#modal-emoji").textContent = victoria ? (ultimNivell ? "🐑👑🏆" : "🏆") : "😅";
+  $("#modal-titol").textContent = victoria
+    ? (ultimNivell ? "HAS COMPLETAT EL JOC!" : "Nivell superat!")
+    : "Sense moviments!";
   $("#modal-text").textContent = victoria
-    ? (ultimNivell ? "Has acabat tots els nivells. Ets un crac de les paraules!" : `Has completat «${LEVELS[estat.nivellIdx].nom}» amb ${estat.moviments} moviments de marge.`)
+    ? (ultimNivell
+        ? "Totes les ovelles han trobat la seva parella. Ets oficialment una llegenda de les paraules! 🎉 Si vols més nivells, envia una 🐑 per WhatsApp."
+        : `Has completat «${LEVELS[estat.nivellIdx].nom}» amb ${estat.moviments} moviments de marge.`)
     : "T'has quedat sense moviments. Torna-ho a intentar!";
 
   const botons = $("#modal-botons");
@@ -395,7 +405,7 @@ function mostraModal(victoria) {
     botons.appendChild(bizum);
   }
   if (victoria && ultimNivell) fes("Torna a l'inici 🏠", "primari", vesAInici);
-  fes("Inici 🏠", "secundari", vesAInici);
+  else fes("Inici 🏠", "secundari", vesAInici);
   $("#modal").classList.remove("amagada");
 }
 
@@ -462,15 +472,26 @@ function renderitza() {
   pintaPeu();
 }
 
+// mida de lletra segons la paraula més llarga, perquè no es talli
+// a les cartes estretes del mòbil
+function estilParaula(text) {
+  const llarg = Math.max(...String(text).split(/\s+/).map(w => w.length));
+  const total = String(text).length;
+  if (llarg <= 7 && total <= 12) return "";
+  if (llarg <= 9 && total <= 16) return ' style="font-size:10.5px"';
+  if (llarg <= 12 && total <= 22) return ' style="font-size:9.5px"';
+  return ' style="font-size:8.5px"';
+}
+
 // contingut d'una carta: les paraules NO mostren la família (l'has d'endevinar!)
 // les cartes mestres porten la corona i el nom de la família
 // les famílies amb dibuixos mostren el seu SVG en comptes de la paraula
 function htmlCarta(carta) {
   const fam = FAMILIES[carta.familia];
-  if (carta.mestra) return `<div class="paraula">${fam.nom}</div><div class="corona">👑</div>`;
+  if (carta.mestra) return `<div class="paraula"${estilParaula(fam.nom)}>${fam.nom}</div><div class="corona">👑</div>`;
   if (fam.dibuixos && typeof DIBUIXOS !== "undefined" && DIBUIXOS[carta.familia] && DIBUIXOS[carta.familia][carta.paraula])
     return `<div class="dibuix">${DIBUIXOS[carta.familia][carta.paraula]}</div>`;
-  return `<div class="paraula">${carta.paraula}</div>`;
+  return `<div class="paraula"${estilParaula(carta.paraula)}>${carta.paraula}</div>`;
 }
 function classesCarta(carta) {
   return "carta destapada" + (carta.mestra ? " mestra" : "");

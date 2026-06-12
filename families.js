@@ -112,16 +112,11 @@ const FAMILIES = {
     emoji: "🎉",
     paraules: ["Sant Jordi", "Carnaval", "Castanyada", "Reis", "Pasqua", "La Mercè", "Tió", "Calçotada", "La Patum", "Sant Medir"]
   },
-  sobreesdruixoles: {
-    nom: "Sobreesdrúixoles",
-    emoji: "🗣️",
-    paraules: ["Dona-me-la", "Porta-me-les", "Menja-te-les", "Mira-te-les", "Renta-te-les", "Guarda-me-les", "Posa-te-la", "Canta-me-la"]
-  },
   diacritics: {
     nom: "Accent diacrític",
     emoji: "✍️",
     // s'escriuen SENSE accent a la carta: així no es delata la família!
-    paraules: ["Be", "Deu", "Es", "Ma", "Mes", "Mon", "Pel", "Que", "Se", "Si", "Sol", "Te", "Ossos", "Adeu", "Rodamon", "Subsol"]
+    paraules: ["Be", "Deu", "Es", "Ma", "Mes", "Mon", "Pel", "Que", "Se", "Si", "Sol", "Te", "Ossos", "Adeu", "Rodamon", "Subsol", "Marededeu", "Entresol", "Contrapel"]
   },
   pau_mas: {
     nom: "Pau Mas",
@@ -146,7 +141,7 @@ const FAMILIES = {
   aina: {
     nom: "Aina",
     emoji: "🎾",
-    paraules: ["Baixeta", "Bodorrio", "Tabac", "Padelera", "Gallines", "Cesc"]
+    paraules: ["Bodorrio", "Tabac", "Padelera", "Gallines", "Cesc", "Convido braves", "Metre cinquanta"]
   },
   ma: {
     nom: "Mà",
@@ -166,7 +161,33 @@ const FAMILIES = {
   nba: {
     nom: "NBA catalana",
     emoji: "🏀",
-    paraules: ["Màgia", "Óssos", "San Antoni", "Guerrers", "Nàggets", "Cèrvols", "Àligues", "Mags"]
+    paraules: ["Màgia", "Ossos", "San Antoni", "Guerrers", "Nàggets", "Cèrvols", "Àligues", "Pistons", "Reis", "Llams"]
+  },
+  // ----- famílies FÀCILS per als primers nivells -----
+  granja: {
+    nom: "La granja",
+    emoji: "🐄",
+    paraules: ["Vaca", "Cavall", "Ovella", "Porc", "Gallina", "Conill", "Ase", "Cabra"]
+  },
+  colors_basics: {
+    nom: "Colors bàsics",
+    emoji: "🌈",
+    paraules: ["Vermell", "Blau", "Verd", "Groc", "Rosa", "Negre", "Blanc", "Lila"]
+  },
+  transport: {
+    nom: "Transports",
+    emoji: "🚌",
+    paraules: ["Cotxe", "Moto", "Tren", "Avió", "Vaixell", "Bicicleta", "Autobús", "Camió"]
+  },
+  escola: {
+    nom: "L'escola",
+    emoji: "🎒",
+    paraules: ["Llapis", "Goma", "Llibreta", "Motxilla", "Pissarra", "Estoig", "Regle", "Tisores"]
+  },
+  esmorzar: {
+    nom: "L'esmorzar",
+    emoji: "🥐",
+    paraules: ["Pa", "Croissant", "Galetes", "Mantega", "Melmelada", "Cereals", "Iogurt", "Mel"]
   },
   escacs: {
     nom: "Escacs",

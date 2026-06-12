@@ -498,6 +498,25 @@ html, body {
 .instr .ko { color: #c62828; font-size: 18px; font-weight: 800; }
 .separador { width: 14px; }
 
+/* firma discreta */
+.marca-aigua {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.28);
+  text-align: center;
+  padding: 8px 0 calc(6px + env(safe-area-inset-bottom));
+  pointer-events: none;
+  user-select: none;
+}
+.marca-joc {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+
 .btn-pill {
   border: none;
   border-radius: 20px;

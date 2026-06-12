@@ -12,7 +12,7 @@ L'objectiu és enviar totes les cartes als espais de col·lecció de dalt abans 
 
 La resta de regles: al tauler només pots apilar paraules de la mateixa família, i un cop ajuntades **sempre es mouen en bloc** (agafis la carta que agafis del grup). Quan treus una carta d'una columna, la tapada de sota es gira. Si no tens jugades, roba de la pila (a dalt a la dreta) — això també gasta un moviment. Quan completes una família, l'espai queda lliure per a la següent.
 
-**Penalitzacions**: equivocar-te de **família** (ajuntar dues cartes de famílies diferents al tauler, o posar una carta en una col·lecció d'una altra família) **resta 1 moviment** i el comptador es pinta de granat un instant. Els altres errors (columna bloquejada per la mestra, obrir una col·lecció sense la mestra, moure malament la mestra) només mostren un missatge informatiu, sense restar.
+**Penalitzacions**: equivocar-te de **família** (ajuntar dues cartes de famílies diferents al tauler, o posar una carta en una col·lecció d'una altra família) resta moviments, i la multa **puja cada 3 errors**: −1, −1, −1, −2, −2, −2, −3... El comptador es pinta de granat un instant. Els altres errors (columna bloquejada per la mestra, obrir una col·lecció sense la mestra, moure malament la mestra) només mostren un missatge informatiu, sense restar.
 
 Controls: **arrossega** les cartes on vulguis (cap destí es ressalta: endevinar la família és part del joc). El botó ↩️ desfà l'últim moviment, però **costa 1 moviment** fer-lo servir.
 
