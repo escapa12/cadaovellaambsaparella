@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galeria de dibuixos — Cada Ovella amb sa Parella</title>
+  <style>
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: #1e8a4c;
+      color: #fff;
+      margin: 0;
+      padding: 16px;
+    }
+    h1 { font-size: 20px; margin: 4px 0 16px; }
+    h2 {
+      font-size: 15px;
+      margin: 22px 0 10px;
+      background: rgba(0,0,0,.25);
+      padding: 6px 12px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+    .graella { display: flex; flex-wrap: wrap; gap: 12px; }
+    .fitxa { text-align: center; }
+    .cartona {
+      width: 86px; height: 114px;
+      background: #fdf6e3;
+      border: 2px solid #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,.3);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cartona svg { width: 78%; height: 82%; }
+    .nom { font-size: 11px; margin-top: 4px; opacity: .9; }
+  </style>
+</head>
+<body>
+  <h1>🎨 Galeria de dibuixos (totes les famílies visuals)</h1>
+  <div id="contingut"></div>
+  <script src="families.js"></script>
+  <script src="dibuixos.js"></script>
+  <script>
+    const cont = document.getElementById("contingut");
+    for (const [fid, lib] of Object.entries(DIBUIXOS)) {
+      const fam = FAMILIES[fid] || { nom: fid, emoji: "" };
+      const h = document.createElement("h2");
+      h.textContent = `${fam.emoji} ${fam.nom} (${Object.keys(lib).length})`;
+      cont.appendChild(h);
+      const g = document.createElement("div");
+      g.className = "graella";
+      for (const [paraula, svg] of Object.entries(lib)) {
+        const f = document.createElement("div");
+        f.className = "fitxa";
+        f.innerHTML = `<div class="cartona">${svg}</div><div class="nom">${paraula}</div>`;
+        g.appendChild(f);
+      }
+      cont.appendChild(g);
+    }
+  </script>
+</body>
+</html>

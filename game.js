@@ -12,9 +12,20 @@
 
 "use strict";
 
+// ---------- edicions ----------
+// El joc es pot servir en diverses "edicions" (amics, feina, família...),
+// cadascuna amb la seva carpeta, els seus nivells i el seu progrés.
+// Cada edició ho defineix al seu edicio.js; l'arrel és l'edició "amics".
+if (window.FAMILIES_EXTRA) Object.assign(FAMILIES, window.FAMILIES_EXTRA);
+const EDICIO_ID = window.EDICIO_ID || "amics";
+const RUTA_ARREL = window.RUTA_ARREL || "";
+const VERSIO_JOC = "v22"; // mantenir sincronitzada amb sw.js
+
 // ---------- utilitats ----------
 const $ = (sel) => document.querySelector(sel);
-const clau = (k) => `solitari.${k}`;
+// el progrés de cada edició es guarda amb una clau separada
+// (l'edició "amics" manté les claus antigues per no perdre progrés)
+const clau = (k) => EDICIO_ID === "amics" ? `solitari.${k}` : `solitari.${EDICIO_ID}.${k}`;
 
 function barreja(arr) {
   const a = arr.slice();
@@ -440,7 +451,9 @@ function pintaGraellaNivells() {
     if (obert) b.onclick = () => nouNivell(i);
     graella.appendChild(b);
   });
-  $("#btn-admin").textContent = admin ? "🔧 Mode admin: ACTIVAT (tots els nivells oberts)" : "🔧 Mode admin";
+  $("#btn-admin").textContent = admin
+    ? `🔧 Mode admin: ACTIVAT · ${VERSIO_JOC} · edició ${EDICIO_ID}`
+    : "🔧 Mode admin";
   $("#btn-admin").classList.toggle("admin-actiu", admin);
 }
 
@@ -774,7 +787,7 @@ window.addEventListener("resize", () => { if (estat) { calculaMides(); renderitz
   }
   // service worker per poder instal·lar-lo al mòbil (només funciona amb https)
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-    navigator.serviceWorker.register("sw.js").catch(() => {});
+    navigator.serviceWorker.register(RUTA_ARREL + "sw.js").catch(() => {});
   }
   // ?nivell=3 per anar directe a un nivell (útil per provar)
   const param = new URLSearchParams(location.search).get("nivell");

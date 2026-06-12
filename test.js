@@ -66,7 +66,17 @@ sandbox.window = sandbox;
 sandbox.addEventListener = () => {};
 vm.createContext(sandbox);
 
-for (const fitxer of ["families.js", "dibuixos.js", "levels.js", "game.js"]) {
+// `node test.js` valida l'edició principal (amics);
+// `node test.js feina` valida l'edició de la carpeta "feina", etc.
+const edicio = process.argv[2];
+const fitxerNivells = edicio ? `${edicio}/edicio.js` : "levels.js";
+if (edicio && !fs.existsSync(__dirname + "/" + fitxerNivells)) {
+  console.error(`❌ No existeix l'edició "${edicio}" (falta ${fitxerNivells})`);
+  process.exit(1);
+}
+console.log(`Edició: ${edicio || "amics (principal)"}\n`);
+
+for (const fitxer of ["families.js", "dibuixos.js", fitxerNivells, "game.js"]) {
   vm.runInContext(fs.readFileSync(__dirname + "/" + fitxer, "utf8"), sandbox, { filename: fitxer });
 }
 

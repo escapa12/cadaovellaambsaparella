@@ -254,7 +254,7 @@ const LEVELS = [
   },
   {
     nom: "Paraulada",
-    moviments: 135,
+    moviments: 142,
     espais: 4,
     win_ratio: 0.25,
     families: [

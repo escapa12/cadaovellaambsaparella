@@ -97,6 +97,20 @@ El joc afegeix automàticament la carta mestra 👑 de cada família (no l'has d
 
 `test.js` compara la ràtio de victòries del bot amb el `win_ratio` de cada nivell i t'avisa si un nivell queda massa difícil o massa fàcil respecte del que esperaves.
 
+## Edicions: un joc per a cada grup
+
+El mateix motor pot servir versions diferents del joc, cadascuna amb el seu enllaç, els seus nivells i el seu progrés separat:
+
+| Edició | Enllaç | Nivells |
+|---|---|---|
+| Amics (principal) | `.../` | `levels.js` |
+| Feina | `.../feina/` | `feina/edicio.js` |
+| Família | `.../familia/` | `familia/edicio.js` |
+
+**Per crear una edició nova**: copia la carpeta `feina/` sencera amb un altre nom (p. ex. `castellers/`), i a `edicio.js` canvia `EDICIO_ID`, els nivells, i si vols afegeix famílies pròpies a `FAMILIES_EXTRA` (hi ha un exemple comentat). Valida-la amb `node test.js castellers`. En publicar, l'enllaç serà `.../castellers/`.
+
+Les famílies de `families.js` i els dibuixos són compartits per totes les edicions; les famílies de `FAMILIES_EXTRA` només existeixen a la seva edició. El progrés de cada edició es guarda a part, així que una mateixa persona pot jugar-ne diverses sense interferències.
+
 ## Com compartir-lo amb els amics (sense Google Play)
 
 La millor opció és **GitHub Pages** (gratuït):
