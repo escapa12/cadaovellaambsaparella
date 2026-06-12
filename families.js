@@ -116,7 +116,7 @@ const FAMILIES = {
     nom: "Accent diacrític",
     emoji: "✍️",
     // s'escriuen SENSE accent a la carta: així no es delata la família!
-    paraules: ["Be", "Deu", "Es", "Ma", "Mes", "Mon", "Pel", "Que", "Se", "Si", "Sol", "Te", "Ossos", "Adeu", "Rodamon", "Subsol"]
+    paraules: ["Be", "Deu", "Es", "Ma", "Mes", "Mon", "Pel", "Que", "Se", "Si", "Sol", "Te", "Ossos", "Adeu"]
   },
   pau_mas: {
     nom: "Pau Mas",

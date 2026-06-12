@@ -92,7 +92,7 @@ const LEVELS = [
   },
   {
     nom: "La volta al món",
-    moviments: 95,
+    moviments: 85,
     espais: 4,
     win_ratio: 0.72,
     families: [
@@ -235,8 +235,8 @@ const LEVELS = [
   },
   {
     nom: "El rebost",
-    moviments: 125,
-    espais: 4,
+    moviments: 95,
+    espais: 5,
     win_ratio: 0.3,
     families: [
       { id: "verdures", n: 7 },
@@ -254,8 +254,8 @@ const LEVELS = [
   },
   {
     nom: "Paraulada",
-    moviments: 142,
-    espais: 4,
+    moviments: 113,
+    espais: 5,
     win_ratio: 0.25,
     families: [
       { id: "diacritics", n: 8 },
@@ -274,8 +274,8 @@ const LEVELS = [
   },
   {
     nom: "Tots els amics",
-    moviments: 144,
-    espais: 4,
+    moviments: 119,
+    espais: 5,
     win_ratio: 0.2,
     families: [
       { id: "pau_mas", n: 6 },
@@ -294,8 +294,8 @@ const LEVELS = [
   },
   {
     nom: "L'infern de les ovelles",
-    moviments: 145,
-    espais: 4,
+    moviments: 124,
+    espais: 5,
     win_ratio: 0.15,
     families: [
       { id: "cos", n: 6 },

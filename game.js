@@ -19,7 +19,7 @@
 if (window.FAMILIES_EXTRA) Object.assign(FAMILIES, window.FAMILIES_EXTRA);
 const EDICIO_ID = window.EDICIO_ID || "amics";
 const RUTA_ARREL = window.RUTA_ARREL || "";
-const VERSIO_JOC = "v25"; // mantenir sincronitzada amb sw.js
+const VERSIO_JOC = "v28"; // mantenir sincronitzada amb sw.js
 
 // ---------- utilitats ----------
 const $ = (sel) => document.querySelector(sel);

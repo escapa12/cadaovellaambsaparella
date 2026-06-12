@@ -128,29 +128,45 @@ function pasBot() {
     }
   }
   // 5. robar (o reciclar)
-  if (estat.pila.length || estat.descart.length) { accioRoba(); return true; }
+  if (estat.pila.length || estat.descart.length) { accioRoba(); return "roba"; }
   return false; // bloquejat
 }
 
 function simula(intents) {
+  // NIVELLS="15,16" INTENTS=1000 node test.js -> simula només aquests nivells
+  const filtre = (typeof NIVELLS_FILTRE !== "undefined" && NIVELLS_FILTRE) || null;
   const res = [];
   for (let i = 0; i < LEVELS.length; i++) {
-    let vict = 0, margeTotal = 0, bloquejos = 0;
+    if (filtre && !filtre.includes(i + 1)) continue;
+    let vict = 0, margeTotal = 0, bloquejat = 0, senseMovLluitant = 0, senseMovCiclant = 0;
     for (let t = 0; t < intents; t++) {
       nouNivell(i);
-      let guard = 0;
+      let guard = 0, encallat = false, robadesSeguides = 0;
       while (!estat.acabat && guard++ < 3000) {
-        if (!pasBot()) { bloquejos++; break; }
+        const pas = pasBot();
+        if (!pas) { encallat = true; break; }
+        if (pas === "roba") robadesSeguides++;
+        else robadesSeguides = 0;
       }
       if (estat.recollides >= estat.totalCartes) { vict++; margeTotal += estat.moviments; }
+      else if (encallat) bloquejat++; // cap jugada possible, ni robant (deadlock dur)
+      else {
+        // si quan mor portava més d'un cicle sencer de pila sense cap
+        // jugada productiva, en realitat estava encallat cremant comptador
+        const midaCicle = estat.pila.length + estat.descart.length + 1;
+        if (robadesSeguides > midaCicle) senseMovCiclant++;
+        else senseMovLluitant++;
+      }
     }
     res.push({
       nivell: i + 1,
       nom: LEVELS[i].nom,
       ratioBot: +(vict / intents).toFixed(2),
       win_ratio: LEVELS[i].win_ratio ?? null,
-      margeMitja: vict ? (margeTotal / vict).toFixed(1) : "-",
-      bloquejos
+      "mortLluitant%": Math.round(100 * senseMovLluitant / intents),
+      "mortCiclant%": Math.round(100 * senseMovCiclant / intents),
+      "bloquejat%": Math.round(100 * bloquejat / intents),
+      margeMitja: vict ? (margeTotal / vict).toFixed(1) : "-"
     });
   }
   return res;
@@ -166,8 +182,11 @@ if (errors.length) {
 }
 console.log("   ✓ families.js i levels.js són coherents\n");
 
-console.log("2) El bot juga 200 partides per nivell...");
-const resultats = vm.runInContext(codiBot, sandbox);
+const nivellsFiltre = process.env.NIVELLS ? process.env.NIVELLS.split(",").map(Number) : null;
+const intents = parseInt(process.env.INTENTS || "200", 10);
+vm.runInContext(`const NIVELLS_FILTRE = ${JSON.stringify(nivellsFiltre)};`, sandbox);
+console.log(`2) El bot juga ${intents} partides per nivell...`);
+const resultats = vm.runInContext(codiBot.replace("simula(200)", `simula(${intents})`), sandbox);
 console.table(resultats);
 
 // el bot és un jugador "decent però sense planificar" i no s'equivoca mai de
