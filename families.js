@@ -50,7 +50,7 @@ const FAMILIES = {
   mobles: {
     nom: "Mobles",
     emoji: "🪑",
-    paraules: ["Escambell", "Tocador", "Paraigüer", "Vitrina", "Bagul", "Consola", "Arca", "Penjador", "Capçal", "Llibreria"]
+    paraules: ["Escambell", "Tocador", "Paraigüer", "Vitrina", "Bagul", "Arca", "Penjador", "Capçal", "Llibreria"]
   },
   vehicles: {
     nom: "Vehicles",
@@ -126,21 +126,21 @@ const FAMILIES = {
   marc_granado: {
     nom: "Marc Granado",
     emoji: "🚴",
-    paraules: ["Glutis", "Partícules", "Birmingham", "París", "Farandola", "Mòbil nou", "Van der Poel", "Birra"]
+    paraules: ["Glutis", "Partícules", "Birmingham", "París", "Farandula", "Mòbil nou", "Van der Poel", "Birra", "Gaudí"]
   },
   mariona: {
     nom: "Mariona Ribes",
-    emoji: "🧗‍♀️",
+    emoji: "🔥",
     paraules: ["Motivada", "Malmho", "Rossa", "Bric", "Pol", "Expat"]
   },
   lupe: {
     nom: "Lupe",
-    emoji: "🎨",
+    emoji: "👒",
     paraules: ["Rubia", "Pija", "Coruña", "Disseny", "Sergis"]
   },
   aina: {
     nom: "Aina",
-    emoji: "🎾",
+    emoji: "🚬",
     paraules: ["Bodorrio", "Tabac", "Padelera", "Gallines", "Cesc", "Convido braves", "Metre cinquanta"]
   },
   ma: {

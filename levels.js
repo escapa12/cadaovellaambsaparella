@@ -92,7 +92,7 @@ const LEVELS = [
   },
   {
     nom: "La volta al món",
-    moviments: 90,
+    moviments: 95,
     espais: 4,
     win_ratio: 0.72,
     families: [
