@@ -1,7 +1,7 @@
 // Service worker: fa que el joc funcioni sense connexió un cop carregat.
 // Si canvies el joc, puja el número de versió perquè els mòbils es refresquin.
-const VERSIO = "solitari-v28";
-const FITXERS = ["./", "index.html", "style.css", "game.js", "families.js", "dibuixos.js", "levels.js", "manifest.json", "icon.png"];
+const VERSIO = "solitari-v29";
+const FITXERS = ["./", "index.html", "style.css", "game.js", "families.js", "dibuixos.js", "levels.js", "manifest.json", "icon.png", "apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(VERSIO).then((c) => c.addAll(FITXERS)));
