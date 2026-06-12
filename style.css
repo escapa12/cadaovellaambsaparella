@@ -294,6 +294,18 @@ html, body {
   font-size: 22px;
   filter: drop-shadow(0 1px 1px rgba(0,0,0,.2));
 }
+/* quantes paraules té la família en aquest nivell */
+.carta.mestra .n-mestra {
+  position: absolute;
+  bottom: 3px;
+  right: 4px;
+  background: rgba(90,65,0,.85);
+  color: #ffe084;
+  font-size: 9px;
+  font-weight: 800;
+  border-radius: 7px;
+  padding: 1px 5px;
+}
 
 .carta.seleccionada {
   outline: 3px solid var(--groc);

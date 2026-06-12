@@ -488,7 +488,12 @@ function estilParaula(text) {
 // les famílies amb dibuixos mostren el seu SVG en comptes de la paraula
 function htmlCarta(carta) {
   const fam = FAMILIES[carta.familia];
-  if (carta.mestra) return `<div class="paraula"${estilParaula(fam.nom)}>${fam.nom}</div><div class="corona">👑</div>`;
+  if (carta.mestra) {
+    // la mestra indica quantes paraules té la família en aquest nivell
+    const n = estat && estat.necessitats[carta.familia];
+    const compte = n ? `<div class="n-mestra">×${n}</div>` : "";
+    return `<div class="paraula"${estilParaula(fam.nom)}>${fam.nom}</div><div class="corona">👑</div>${compte}`;
+  }
   if (fam.dibuixos && typeof DIBUIXOS !== "undefined" && DIBUIXOS[carta.familia] && DIBUIXOS[carta.familia][carta.paraula])
     return `<div class="dibuix">${DIBUIXOS[carta.familia][carta.paraula]}</div>`;
   return `<div class="paraula"${estilParaula(carta.paraula)}>${carta.paraula}</div>`;

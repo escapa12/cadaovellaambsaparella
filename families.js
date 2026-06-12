@@ -189,6 +189,16 @@ const FAMILIES = {
     emoji: "🥐",
     paraules: ["Pa", "Croissant", "Galetes", "Mantega", "Melmelada", "Cereals", "Iogurt", "Mel"]
   },
+  dies: {
+    nom: "Dies de la setmana",
+    emoji: "📅",
+    paraules: ["Dilluns", "Dimarts", "Dimecres", "Dijous", "Divendres", "Dissabte", "Diumenge"]
+  },
+  postres: {
+    nom: "Postres",
+    emoji: "🍰",
+    paraules: ["Flam", "Gelat", "Pastís", "Crema catalana", "Coca", "Torró", "Magdalena", "Xocolata"]
+  },
   escacs: {
     nom: "Escacs",
     emoji: "♟️",

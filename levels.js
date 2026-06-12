@@ -56,8 +56,8 @@ const LEVELS = [
       { id: "senyals", n: 5 },
       { id: "transport", n: 5 },
       { id: "esmorzar", n: 4 },
-      { id: "granja", n: 3 },
-      { id: "escola", n: 3 }
+      { id: "dies", n: 3 },
+      { id: "postres", n: 3 }
     ],
     columnes: [1, 2, 3, 4]
   },
@@ -69,9 +69,9 @@ const LEVELS = [
     families: [
       { id: "escacs", n: 6 },
       { id: "pau_mas", n: 6 },
-      { id: "esmorzar", n: 5 },
-      { id: "transport", n: 4 },
-      { id: "colors_basics", n: 4 }
+      { id: "postres", n: 5 },
+      { id: "colors_basics", n: 4 },
+      { id: "fruites", n: 4 }
     ],
     columnes: [2, 3, 4, 4]
   },
@@ -83,10 +83,10 @@ const LEVELS = [
     families: [
       { id: "joies", n: 6 },
       { id: "lupe", n: 5 },
-      { id: "granja", n: 5 },
       { id: "escola", n: 5 },
       { id: "esmorzar", n: 4 },
-      { id: "fruites", n: 4 }
+      { id: "dies", n: 5 },
+      { id: "transport", n: 4 }
     ],
     columnes: [2, 3, 4, 5]
   },
