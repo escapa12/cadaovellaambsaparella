@@ -79,7 +79,7 @@ if (edicio && !fs.existsSync(__dirname + "/" + fitxerNivells)) {
 }
 console.log(`Edició: ${edicio || "amics (principal)"}\n`);
 
-for (const fitxer of ["families.js", "dibuixos.js", fitxerNivells, "game.js"]) {
+for (const fitxer of ["families.js", "dibuixos.js", "definicions.js", fitxerNivells, "game.js"]) {
   vm.runInContext(fs.readFileSync(__dirname + "/" + fitxer, "utf8"), sandbox, { filename: fitxer });
 }
 

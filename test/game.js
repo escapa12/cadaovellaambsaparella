@@ -20,6 +20,7 @@ if (window.FAMILIES_EXTRA) Object.assign(FAMILIES, window.FAMILIES_EXTRA);
 const EDICIO_ID = window.EDICIO_ID || "amics";
 const RUTA_ARREL = window.RUTA_ARREL || "";
 const VERSIO_JOC = "v30"; // mantenir sincronitzada amb sw.js
+const COMODINS = 3; // comodins 🔍 per defecte a cada nivell (es pot fixar per nivell amb comodins: N)
 
 // ---------- utilitats ----------
 const $ = (sel) => document.querySelector(sel);
@@ -118,6 +119,7 @@ function iniciaPartida(niv, idx, infinit) {
     infinit: !!infinit,
     nomNivell: niv.nom,
     moviments: niv.moviments,
+    comodins: niv.comodins != null ? niv.comodins : COMODINS,
     columnes,
     pila: barrejada, // la resta va a la pila de robar
     descart: [],
@@ -692,7 +694,7 @@ function renderitza() {
     ? `♾️ ${estat.nomNivell}`
     : `Nivell ${estat.nivellIdx + 1} · ${estat.nomNivell}`;
   const cm = $("#comptador-moviments");
-  cm.innerHTML = `Moviments: <b>${estat.moviments}</b>`;
+  cm.innerHTML = `Moviments: <b>${estat.moviments}</b> · 🔍 <b>${estat.comodins}</b>`;
   cm.classList.toggle("alerta", estat.moviments <= 5);
   $("#btn-desfer").disabled = !estat.historial.length;
 
@@ -840,25 +842,49 @@ function iniciBloc(origenBase) {
   return { tipus: "columna", col: origenBase.col, idx: i };
 }
 
+// consulta la definició d'una carta (comodí 🔍). Gasta 1 comodí.
+function consultaDefinicio(carta) {
+  const paraula = carta.mestra ? FAMILIES[carta.familia].nom : carta.paraula;
+  const def = (typeof DEFINICIONS !== "undefined" && DEFINICIONS[paraula]) || null;
+  if (carta.mestra) { missatge(`👑 ${paraula}`); return; } // la mestra ja diu la família: gratis
+  if (!def) { missatge(`📖 «${paraula}»: sense definició`); return; }
+  if (estat.comodins <= 0) { missatge("🔍 No et queden comodins en aquest nivell!"); return; }
+  estat.comodins--;
+  renderitza();
+  missatge(`🔍 ${paraula}: ${def}`, 4500);
+}
+
 function registraPunter(el, origenBase) {
   el.addEventListener("pointerdown", (e) => {
     if (estat.acabat) return;
     e.preventDefault();
+    // carta concreta que s'ha tocat (per a la consulta de definició)
+    const cartaClic = origenBase.tipus === "columna"
+      ? estat.columnes[origenBase.col][origenBase.idx]
+      : estat.descart[estat.descart.length - 1];
     const origen = iniciBloc(origenBase);
     const cartes = agafaCartes(origen);
-    if (!cartes) { el.classList.add("no-no"); setTimeout(() => el.classList.remove("no-no"), 350); return; }
     // capturar el punter: així el dit pot sortir de la carta sense perdre el gest
     try { el.setPointerCapture(e.pointerId); } catch (err) { /* navegadors antics */ }
     // l'element d'on parteix el fantasma és la primera carta del bloc
-    const elBloc = origen.tipus === "columna"
+    const elBloc = (cartes && origen.tipus === "columna")
       ? document.querySelector(`.carta[data-col="${origen.col}"][data-idx="${origen.idx}"]`) || el
       : el;
     drag = {
-      origen, cartes,
+      origen, cartes: cartes || null,
       x0: e.clientX, y0: e.clientY,
       el: elBloc, fantasma: null,
-      rect: elBloc.getBoundingClientRect()
+      rect: elBloc.getBoundingClientRect(),
+      timer: null
     };
+    // pulsació llarga (450 ms sense moure) → consultar definició
+    drag.timer = setTimeout(() => {
+      if (!drag) return;
+      if (drag.fantasma) drag.fantasma.remove();
+      drag = null;
+      mostraOcults();
+      consultaDefinicio(cartaClic);
+    }, 450);
   });
 }
 
@@ -868,6 +894,7 @@ document.addEventListener("pointercancel", () => {
   if (!drag) return;
   const d = drag;
   drag = null;
+  if (d.timer) clearTimeout(d.timer);
   if (d.fantasma) d.fantasma.remove();
   mostraOcults();
   renderitza();
@@ -881,6 +908,9 @@ document.addEventListener("contextmenu", (e) => {
 document.addEventListener("pointermove", (e) => {
   if (!drag) return;
   const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+  // moure el dit cancel·la la pulsació llarga (és un arrossegament)
+  if (drag.timer && Math.hypot(dx, dy) > 8) { clearTimeout(drag.timer); drag.timer = null; }
+  if (!drag.cartes) return; // carta no arrossegable: només admetia long-press
   if (!drag.fantasma && Math.hypot(dx, dy) > 8) creaFantasma(e);
   if (drag.fantasma) {
     drag.fantasma.style.left = (drag.rect.left + dx) + "px";
@@ -892,8 +922,13 @@ document.addEventListener("pointerup", (e) => {
   if (!drag) return;
   const d = drag;
   drag = null;
+  if (d.timer) clearTimeout(d.timer);
 
-  if (!d.fantasma) return; // un toc sense arrossegar no fa res
+  if (!d.fantasma) {
+    // toc curt: si la carta no es podia agafar, fes el gest de "no"
+    if (!d.cartes && d.el) { d.el.classList.add("no-no"); setTimeout(() => d.el.classList.remove("no-no"), 350); }
+    return; // un toc sense arrossegar no mou res
+  }
 
   // ha estat un arrossegament
   d.fantasma.remove();
