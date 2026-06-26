@@ -421,15 +421,19 @@ function comprovaFinal() {
       const rec = Math.max(r, parseInt(localStorage.getItem(clau("inf_record")) || "0", 10));
       localStorage.setItem(clau("inf_record"), String(rec));
     } else {
-      const sup = Math.max(nivellsSuperats(), estat.nivellIdx + 1);
-      localStorage.setItem(clau("progres"), String(sup));
-      // en completar el bloc Normal, es desbloqueja el Difícil:
-      // reiniciem el comptador d'intents del difícil (comencen de zero)
-      const normal = rangsBlocs().find((b) => b.id === "normal");
-      if (normal && estat.nivellIdx + 1 === normal.end) {
-        const d = JSON.parse(localStorage.getItem(clau("intents")) || "{}");
-        d.dificil = 0;
-        localStorage.setItem(clau("intents"), JSON.stringify(d));
+      // progrés per bloc: nombre de nivells completats dins del bloc
+      const b = rangsBlocs().find((x) => estat.nivellIdx >= x.start && estat.nivellIdx < x.end);
+      if (b) {
+        const pos = estat.nivellIdx - b.start + 1; // quants completats fins aquí
+        const abans = progresBloc(b.id);
+        desaProgresBloc(b.id, pos);
+        // en completar el Normal es desbloquegen Difícil i Infinit:
+        // reiniciem el comptador d'intents del difícil (comencen de zero)
+        if (b.id === "normal" && abans < b.mida && pos >= b.mida) {
+          const d = JSON.parse(localStorage.getItem(clau("intents")) || "{}");
+          d.dificil = 0;
+          localStorage.setItem(clau("intents"), JSON.stringify(d));
+        }
       }
     }
     setTimeout(() => mostraModal(true), 800);
@@ -461,17 +465,17 @@ function mostraModal(victoria) {
 
   let emoji, titol, text;
   if (victoria && acabaNormal) {
-    // SORPRESA: es revela el mode Difícil en acabar el Normal
+    // SORPRESA: en acabar el Normal es revelen el Difícil i l'Infinit
     emoji = "🔥🐑🔥";
     titol = "S'HA OBERT EL MODE EXPERT!";
-    text = "Pensaves que ja ho havies vist tot? Doncs no. Has domat totes les ovelles fàcils... però ara s'obre el MODE EXPERT: ramat salvatge, paraules traïdores i marges de moviments sense pietat. Només per a pastors de debò. Hi entres? 🐏💀";
+    text = "Pensaves que ja ho havies vist tot? Doncs no. Has domat totes les ovelles fàcils... i ara s'obren dues bèsties: el MODE DIFÍCIL (ramat salvatge, paraules traïdores i marges sense pietat) i el ♾️ MODE INFINIT (nivells aleatoris infinits a dificultat experta). Només per a pastors de debò. Hi entres? 🐏💀";
     fes("Vull patir 🔥", "primari", () => nouNivell(idx + 1));
     fes("Ara no, gràcies 🏠", "secundari", vesAInici);
   } else if (victoria && ultimNivell) {
-    // final del joc: es desbloqueja el mode infinit
+    // final del joc
     emoji = "🐑👑🏆";
     titol = "HAS DOMAT TOTES LES OVELLES!";
-    text = "Has completat els 55 nivells. Ets oficialment una LLEGENDA de les paraules! 🎉 I com a premi s'obre el ♾️ MODE INFINIT: nivells aleatoris, sempre a dificultat experta, fins que el cap digui prou.";
+    text = "Has completat els 55 nivells. Ets oficialment una LLEGENDA de les paraules! 🎉 Encara tens el ♾️ MODE INFINIT esperant-te, amb nivells aleatoris fins que el cap digui prou.";
     fes("Mode infinit ♾️", "primari", nouNivellInfinit);
     fes("Inici 🏠", "secundari", vesAInici);
   } else if (inf && victoria) {
@@ -520,8 +524,38 @@ function mostraModal(victoria) {
 }
 
 // ---------- pantalla d'inici ----------
-function nivellsSuperats() {
-  return parseInt(localStorage.getItem(clau("progres")) || "0", 10);
+// progrés PER BLOC: { tutorial, normal, dificil } = nivells completats
+function progresBlocs() {
+  return JSON.parse(localStorage.getItem(clau("prog")) || "{}");
+}
+function progresBloc(id) {
+  return progresBlocs()[id] || 0;
+}
+function desaProgresBloc(id, n) {
+  const p = progresBlocs();
+  if (n > (p[id] || 0)) { p[id] = n; localStorage.setItem(clau("prog"), JSON.stringify(p)); }
+}
+// Normal i Tutorial sempre desbloquejats; Difícil i Infinit, només
+// quan s'ha completat tot el bloc Normal.
+function normalComplet() {
+  const n = rangsBlocs().find((b) => b.id === "normal");
+  return n ? progresBloc("normal") >= n.mida : false;
+}
+function blocDesbloquejat(b) {
+  if (adminActiu()) return true;
+  return b.id === "tutorial" || b.id === "normal" || normalComplet();
+}
+function infinitDesbloquejat() {
+  return adminActiu() || normalComplet();
+}
+// nivell on porta el botó "Continua": el primer pendent d'un bloc desbloquejat
+function nivellContinua() {
+  for (const b of rangsBlocs()) {
+    if (!blocDesbloquejat(b)) continue;
+    const fets = progresBloc(b.id);
+    if (fets < b.mida) return b.start + fets;
+  }
+  return null;
 }
 
 function vesAInici() {
@@ -551,7 +585,6 @@ function pintaGraellaNivells() {
   const menu = $("#menu-blocs");
   const graella = $("#graella-nivells");
   const btnTornar = $("#btn-tornar-blocs");
-  const superats = nivellsSuperats();
   const admin = adminActiu();
   const blocs = rangsBlocs();
   menu.innerHTML = "";
@@ -563,11 +596,9 @@ function pintaGraellaNivells() {
     graella.classList.add("amagada");
     btnTornar.classList.add("amagada");
 
-    const totFet = superats >= LEVELS.length;
-
     // HERO "Continua": salta directament al següent nivell pendent
-    if (!totFet) {
-      const seg = Math.min(superats, LEVELS.length - 1);
+    const seg = nivellContinua();
+    if (seg !== null) {
       const bSeg = blocs.find((b) => seg >= b.start && seg < b.end);
       const hero = document.createElement("button");
       hero.className = "btn-continua";
@@ -578,12 +609,11 @@ function pintaGraellaNivells() {
       menu.appendChild(hero);
     }
 
-    // targetes de bloc: NOMÉS les ja desbloquejades. Els blocs futurs
-    // s'amaguen del tot perquè el Difícil sigui una sorpresa.
+    // targetes de bloc: NOMÉS les desbloquejades (Normal sempre visible;
+    // Difícil amagat fins completar el Normal, perquè sigui sorpresa).
     blocs.forEach((b, bi) => {
-      const obert = admin || superats >= b.start;
-      if (!obert) return;
-      const fets = Math.max(0, Math.min(superats, b.end) - b.start);
+      if (!blocDesbloquejat(b)) return;
+      const fets = progresBloc(b.id);
       const pct = Math.round((100 * fets) / b.mida);
       const btn = document.createElement("button");
       btn.className = "btn-bloc";
@@ -597,8 +627,8 @@ function pintaGraellaNivells() {
       menu.appendChild(btn);
     });
 
-    // mode infinit: només quan s'han acabat tots els nivells
-    if (admin || totFet) {
+    // mode infinit: desbloquejat en completar el Normal
+    if (infinitDesbloquejat()) {
       const ratxa = parseInt(localStorage.getItem(clau("inf_ratxa")) || "0", 10);
       const record = parseInt(localStorage.getItem(clau("inf_record")) || "0", 10);
       const inf = document.createElement("button");
@@ -617,14 +647,17 @@ function pintaGraellaNivells() {
     graella.classList.remove("amagada");
     btnTornar.classList.remove("amagada");
     const b = blocs[blocSeleccionat];
+    const fets = progresBloc(b.id);
     btnTornar.innerHTML = `← ${b.emoji} ${b.nom}`;
     for (let i = b.start; i < b.end && i < LEVELS.length; i++) {
-      const obert = admin || i <= superats;
+      const pos = i - b.start;            // posició dins del bloc (0-based)
+      const obert = admin || pos <= fets; // el primer sempre obert; després, seqüencial
+      const completat = pos < fets;
       const cell = document.createElement("button");
       cell.className = "btn-nivell";
-      if (i < superats) cell.classList.add("superat");
+      if (completat) cell.classList.add("superat");
       if (!obert) cell.classList.add("bloquejat");
-      cell.innerHTML = !obert ? "🔒" : `${i + 1}<small>${i < superats ? "⭐" : ""}</small>`;
+      cell.innerHTML = !obert ? "🔒" : `${i + 1}<small>${completat ? "⭐" : ""}</small>`;
       if (obert) cell.onclick = () => nouNivell(i);
       graella.appendChild(cell);
     }
@@ -954,7 +987,11 @@ $("#btn-tancar-instruccions").addEventListener("click", () => {
 });
 $("#btn-esborrar-progres").addEventListener("click", () => {
   if (confirm("Segur que vols esborrar el progrés?")) {
-    localStorage.removeItem(clau("progres"));
+    localStorage.removeItem(clau("prog"));
+    localStorage.removeItem(clau("intents"));
+    localStorage.removeItem(clau("inf_ratxa"));
+    localStorage.removeItem(clau("inf_record"));
+    blocSeleccionat = null;
     pintaGraellaNivells();
   }
 });

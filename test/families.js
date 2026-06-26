@@ -250,7 +250,7 @@ const FAMILIES = {
   postres: {
     nom: "Postres",
     emoji: "🍰",
-    paraules: ["Flam", "Gelat", "Pastís", "Crema catalana", "Coca", "Torró", "Magdalena", "Xocolata"]
+    paraules: ["Flam", "Gelat", "Pastís", "Crema catalana", "Coca", "Torró", "Tiramisú", "Xocolata"]
   },
   escacs: {
     nom: "Escacs",
