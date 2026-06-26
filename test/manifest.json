@@ -1,0 +1,25 @@
+{
+  "name": "Cada Ovella (TEST)",
+  "short_name": "Ovella TEST",
+  "description": "Un solitari de paraules en català: cada paraula amb la seva família!",
+  "lang": "ca",
+  "start_url": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1e8a4c",
+  "theme_color": "#1e8a4c",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

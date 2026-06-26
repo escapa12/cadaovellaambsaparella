@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1e8a4c">
+  <title>Cada Ovella (TEST)</title>
+  <script>window.EDICIO_ID = "test";</script>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== PANTALLA D'INICI ===== -->
+  <div id="pantalla-inici" class="pantalla">
+    <div class="logo">
+      <div class="logo-corona">🐑</div>
+      <h1>Cada Ovella<br><span>amb sa Parella</span></h1>
+    </div>
+    <p class="subtitol">Cada paraula amb la seva família!</p>
+    <p class="subtitol" style="color:#ffd34d;font-weight:700;margin-top:-18px">🧪 VERSIÓ DE PROVES</p>
+    <button id="btn-instruccions-inici" class="btn-pill">❓ Com s'hi juga</button>
+    <div id="graella-nivells"></div>
+    <button id="btn-admin" class="btn-text">🔧 Mode admin</button>
+    <button id="btn-esborrar-progres" class="btn-text">Esborrar progrés</button>
+    <div class="marca-aigua">skapo productions</div>
+  </div>
+
+  <!-- ===== PANTALLA DE JOC ===== -->
+  <div id="pantalla-joc" class="pantalla amagada">
+    <header id="capçalera">
+      <button id="btn-inici" class="btn-icona" title="Inici">🏠</button>
+      <div id="info-nivell">
+        <div id="nom-nivell"></div>
+        <div id="comptador-moviments"></div>
+      </div>
+      <div class="botons-dreta">
+        <button id="btn-instruccions-joc" class="btn-icona" title="Com s'hi juga">❓</button>
+        <button id="btn-desfer" class="btn-icona" title="Desfer">↩️</button>
+        <button id="btn-reiniciar" class="btn-icona" title="Reiniciar">🔄</button>
+      </div>
+    </header>
+
+    <div id="zona-robar">
+      <div id="descart"></div>
+      <div id="pila-robar"></div>
+    </div>
+    <div id="fundacions"></div>
+    <div id="tauler"></div>
+
+    <div id="missatge-flotant" class="amagada"></div>
+    <div class="marca-aigua marca-joc">skapo productions</div>
+  </div>
+
+  <!-- ===== PANTALLA D'INSTRUCCIONS ===== -->
+  <div id="pantalla-instruccions" class="pantalla amagada">
+    <header id="capçalera-instruccions">
+      <button id="btn-tancar-instruccions" class="btn-icona">←</button>
+      <h2>Com s'hi juga</h2>
+    </header>
+    <div id="cos-instruccions">
+
+      <section class="instr">
+        <h3>🎯 L'objectiu</h3>
+        <p>Envia <b>totes les cartes</b> a les col·leccions de dalt abans d'esgotar els moviments.</p>
+        <div class="infografia">
+          <div class="mini-carta"><span>Talp</span></div>
+          <div class="mini-carta"><span>Fura</span></div>
+          <span class="fletxa">→</span>
+          <div class="mini-fundacio"><i>Animals</i><b>🐾</b><u>2/4</u></div>
+        </div>
+      </section>
+
+      <section class="instr">
+        <h3>👑 La carta mestra</h3>
+        <p>Només la <b>carta daurada</b> de cada família pot <b>obrir</b> una col·lecció.</p>
+        <div class="infografia">
+          <div class="mini-carta mini-mestra"><span>Animals</span><em>👑</em></div>
+          <span class="fletxa">→</span>
+          <div class="mini-slot">👑</div>
+          <span class="ok">✓</span>
+        </div>
+        <div class="infografia">
+          <div class="mini-carta"><span>Talp</span></div>
+          <span class="fletxa">→</span>
+          <div class="mini-slot">👑</div>
+          <span class="ko">✗</span>
+        </div>
+      </section>
+
+      <section class="instr">
+        <h3>🃏 Apila per famílies</h3>
+        <p>Només pots apilar cartes de la <b>mateixa família</b>... i l'has d'endevinar! Un cop juntes, es mouen <b>en bloc</b>.</p>
+        <div class="infografia">
+          <div class="mini-pila"><div class="mini-carta"><span>Fura</span></div><div class="mini-carta solapada"><span>Talp</span></div></div>
+          <span class="ok">✓</span>
+          <span class="separador"></span>
+          <div class="mini-pila"><div class="mini-carta"><span>Fura</span></div><div class="mini-carta solapada"><span>Atzur</span></div></div>
+          <span class="ko">✗ −1</span>
+        </div>
+      </section>
+
+      <section class="instr">
+        <h3>⛔ La mestra bloqueja</h3>
+        <p>Mestra a sobre = columna <b>tancada</b>. El bloc només pot anar a una col·lecció o a una columna buida.</p>
+        <div class="infografia">
+          <div class="mini-pila"><div class="mini-carta"><span>Talp</span></div><div class="mini-carta mini-mestra solapada"><span>Animals</span><em>👑</em></div></div>
+          <span class="fletxa">←</span>
+          <div class="mini-carta"><span>Fura</span></div>
+          <span class="ko">✗</span>
+        </div>
+      </section>
+
+      <section class="instr">
+        <h3>🂠 La pila de robar</h3>
+        <p>Sense jugades? Toca la pila per robar. Quan s'acabi, recicla ♻️ el descart.</p>
+      </section>
+
+      <section class="instr">
+        <h3>⚡ Els moviments</h3>
+        <p>Tot costa <b>1 moviment</b>: moure, robar i desfer ↩️. Cada error de família resta, i <b>cada 3 errors la multa puja</b>: −1, −1, −1, −2, −2, −2, −3... A 0, has perdut!</p>
+      </section>
+
+      <section class="instr">
+        <h3>🐑 Consells</h3>
+        <p>Buida columnes aviat. No obris col·leccions a la babalà: els espais són limitats!</p>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ===== MODAL VICTÒRIA / DERROTA ===== -->
+  <div id="modal" class="amagada">
+    <div id="modal-caixa">
+      <div id="modal-emoji"></div>
+      <h2 id="modal-titol"></h2>
+      <p id="modal-text"></p>
+      <div id="modal-botons"></div>
+    </div>
+  </div>
+
+  <script src="families.js"></script>
+  <script src="dibuixos.js"></script>
+  <script src="levels.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
