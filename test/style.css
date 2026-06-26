@@ -78,6 +78,25 @@ html, body {
   width: min(320px, 86vw);
   margin-bottom: 24px;
 }
+/* hero "Continua" */
+.btn-continua {
+  border: none;
+  border-radius: 18px;
+  background: var(--groc);
+  color: #6b4d00;
+  box-shadow: 0 5px 0 rgba(0,0,0,.28);
+  cursor: pointer;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.btn-continua:active { transform: translateY(2px); box-shadow: 0 3px 0 rgba(0,0,0,.28); }
+.btn-continua .cont-titol { font-size: 22px; font-weight: 800; }
+.btn-continua .cont-sub { font-size: 13px; font-weight: 700; opacity: .8; }
+
+/* targetes de bloc */
 .btn-bloc {
   border: none;
   border-radius: 18px;
@@ -85,7 +104,7 @@ html, body {
   color: var(--verd-fosc);
   box-shadow: 0 5px 0 rgba(0,0,0,.25);
   cursor: pointer;
-  padding: 16px 18px;
+  padding: 14px 16px;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -94,16 +113,33 @@ html, body {
 }
 .btn-bloc:active { transform: translateY(2px); box-shadow: 0 3px 0 rgba(0,0,0,.25); }
 .btn-bloc .bloc-emoji { font-size: 30px; }
-.btn-bloc .bloc-nom { font-size: 19px; font-weight: 800; }
-.btn-bloc .bloc-prog { font-size: 12px; font-weight: 700; opacity: .7; }
-.btn-bloc.complet { outline: 3px solid var(--groc); }
-.btn-bloc.bloquejat {
-  background: rgba(255,255,255,.16);
-  color: rgba(255,255,255,.6);
-  box-shadow: none;
-  cursor: default;
+.btn-bloc .bloc-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.btn-bloc .bloc-nom { font-size: 18px; font-weight: 800; }
+.btn-bloc .bloc-sub { font-size: 11.5px; font-weight: 600; opacity: .65; }
+.btn-bloc .bloc-barra {
+  height: 7px;
+  border-radius: 5px;
+  background: rgba(0,0,0,.12);
+  overflow: hidden;
 }
-.btn-bloc.bloquejat .bloc-prog { opacity: .6; }
+.btn-bloc .bloc-barra > span {
+  display: block;
+  height: 100%;
+  background: #2eb360;
+  border-radius: 5px;
+}
+.btn-bloc .bloc-prog {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.btn-bloc .bloc-prog small { font-size: 10px; font-weight: 600; opacity: .6; }
+.btn-bloc.complet { outline: 3px solid var(--groc); }
+.btn-bloc.complet .bloc-barra > span { background: var(--groc); }
+.btn-bloc.infinit { background: linear-gradient(150deg, #ffe9a8, #ffd34d); color: #6b4d00; }
 #btn-tornar-blocs { align-self: center; font-size: 15px; margin-bottom: 6px; }
 
 .btn-nivell {
