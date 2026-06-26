@@ -670,12 +670,15 @@ function pintaGraellaNivells() {
 }
 
 // ---------- mides ----------
+let ampleActual = 78; // amplada de carta vigent (px), per dimensionar la lletra
+
 function calculaMides() {
   const ncols = estat
     ? Math.max(estat.columnes.length, estat.fundacions.length)
     : Math.max(LEVELS[0].columnes.length, LEVELS[0].espais);
   const vw = document.documentElement.clientWidth;
   const ample = Math.max(54, Math.min(84, Math.floor((vw - 20 - (ncols - 1) * 8) / ncols)));
+  ampleActual = ample;
   const root = document.documentElement.style;
   root.setProperty("--ample-carta", ample + "px");
   root.setProperty("--alt-carta", Math.round(ample * 1.32) + "px");
@@ -698,15 +701,16 @@ function renderitza() {
   pintaPeu();
 }
 
-// mida de lletra segons la paraula més llarga, perquè no es talli
-// a les cartes estretes del mòbil
+// mida de lletra calculada segons l'AMPLADA REAL de la carta (que varia
+// amb el nombre de columnes) i la paraula més llarga, perquè la paraula
+// càpiga en una línia sempre que es pugui i mai surti tallada.
 function estilParaula(text) {
-  const llarg = Math.max(...String(text).split(/\s+/).map(w => w.length));
-  const total = String(text).length;
-  if (llarg <= 7 && total <= 12) return "";
-  if (llarg <= 9 && total <= 16) return ' style="font-size:10.5px"';
-  if (llarg <= 12 && total <= 22) return ' style="font-size:9.5px"';
-  return ' style="font-size:8.5px"';
+  const llarg = Math.max(...String(text).split(/\s+/).map(w => w.length)) || 1;
+  const usable = ampleActual - 10;            // amplada interior de la carta
+  const ampleLletra = 0.62;                    // factor d'amplada de la lletra negreta
+  let font = Math.floor(usable / (ampleLletra * llarg));
+  font = Math.max(8, Math.min(13, font));      // entre 8 i 13 px
+  return ` style="font-size:${font}px"`;
 }
 
 // contingut d'una carta: les paraules NO mostren la família (l'has d'endevinar!)
