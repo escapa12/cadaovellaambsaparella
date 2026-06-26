@@ -368,7 +368,7 @@ function marcaPenalitzacio() {
 // retorna el cost aplicat, per mostrar-lo al missatge
 function penalitza() {
   estat.errors = (estat.errors || 0) + 1;
-  const cost = 1 + Math.floor((estat.errors - 1) / 3);
+  const cost = Math.min(5, 1 + Math.floor((estat.errors - 1) / 3)); // mai més de 5 per error
   estat.moviments -= cost;
   renderitza();
   marcaPenalitzacio();
