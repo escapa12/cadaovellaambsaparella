@@ -436,12 +436,32 @@ function adminActiu() {
   return localStorage.getItem(clau("admin")) === "1";
 }
 
+// a quin dels 3 blocs pertany un nivell, segons la seva posició
+function blocDelNivell(i, total) {
+  if (typeof BLOCS === "undefined" || !BLOCS.length) return null;
+  const primers = BLOCS[0].primers || 0;
+  const ultims = BLOCS[BLOCS.length - 1].ultims || 0;
+  if (i < primers) return BLOCS[0];
+  if (i >= total - ultims) return BLOCS[BLOCS.length - 1];
+  return BLOCS[1];
+}
+
 function pintaGraellaNivells() {
   const graella = $("#graella-nivells");
   graella.innerHTML = "";
   const superats = nivellsSuperats();
   const admin = adminActiu();
+  let blocActual = null;
   LEVELS.forEach((niv, i) => {
+    // capçalera de bloc (Tutorial / Normal / Repte final)
+    const bloc = blocDelNivell(i, LEVELS.length);
+    if (bloc && bloc !== blocActual) {
+      blocActual = bloc;
+      const titol = document.createElement("div");
+      titol.className = "bloc-titol";
+      titol.innerHTML = `${bloc.emoji} ${bloc.nom}`;
+      graella.appendChild(titol);
+    }
     const b = document.createElement("button");
     b.className = "btn-nivell";
     const obert = admin || i <= superats;

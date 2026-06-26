@@ -70,6 +70,22 @@ html, body {
   margin-bottom: 30px;
 }
 
+/* capçalera de cada bloc de dificultat (Tutorial / Normal / Repte final) */
+.bloc-titol {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  opacity: .92;
+  margin: 10px 0 -4px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,.18);
+  text-shadow: 0 1px 0 rgba(0,0,0,.25);
+}
+.bloc-titol:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+
 .btn-nivell {
   width: 70px; height: 70px;
   border: none;

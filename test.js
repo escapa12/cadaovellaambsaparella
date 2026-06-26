@@ -68,7 +68,10 @@ vm.createContext(sandbox);
 
 // `node test.js` valida l'edició principal (amics);
 // `node test.js feina` valida l'edició de la carpeta "feina", etc.
-const edicio = process.argv[2];
+// `node test.js --funnel` afegeix l'informe del level funnel (ho fa servir la skill).
+const args = process.argv.slice(2);
+const funnelMode = args.includes("--funnel");
+const edicio = args.find((a) => !a.startsWith("--"));
 const fitxerNivells = edicio ? `${edicio}/edicio.js` : "levels.js";
 if (edicio && !fs.existsSync(__dirname + "/" + fitxerNivells)) {
   console.error(`❌ No existeix l'edició "${edicio}" (falta ${fitxerNivells})`);
@@ -187,7 +190,58 @@ const intents = parseInt(process.env.INTENTS || "200", 10);
 vm.runInContext(`const NIVELLS_FILTRE = ${JSON.stringify(nivellsFiltre)};`, sandbox);
 console.log(`2) El bot juga ${intents} partides per nivell...`);
 const resultats = vm.runInContext(codiBot.replace("simula(200)", `simula(${intents})`), sandbox);
-console.table(resultats);
+if (!funnelMode) console.table(resultats);
+
+// ---------- informe del LEVEL FUNNEL (node test.js --funnel) ----------
+if (funnelMode) {
+  const levels = vm.runInContext("LEVELS", sandbox);
+  const fams = vm.runInContext("FAMILIES", sandbox);
+  const blocs = vm.runInContext("typeof BLOCS !== 'undefined' ? BLOCS : null", sandbox);
+  const nomBloc = (i) => {
+    if (!blocs || !blocs.length) return "";
+    const primers = blocs[0].primers || 0, ultims = blocs[blocs.length - 1].ultims || 0;
+    const b = i < primers ? blocs[0] : (i >= levels.length - ultims ? blocs[blocs.length - 1] : blocs[1]);
+    return `${b.emoji} ${b.nom}`;
+  };
+  const dif = (r) => r.win_ratio == null ? "?" :
+    r.win_ratio >= 0.8 ? "Molt fàcil" : r.win_ratio >= 0.6 ? "Fàcil" :
+    r.win_ratio >= 0.45 ? "Mitjana" : r.win_ratio >= 0.3 ? "Difícil" : "Molt difícil";
+
+  console.log(`\n# 📊 Level funnel — edició ${edicio || "amics"} (${intents} partides/nivell)\n`);
+  console.log("## Mètriques per nivell\n");
+  console.log("| # | Nivell | Bloc | Famílies | Dificultat | Bot win% | Mov. rest. en guanyar | % bloqueig | % sense moviments |");
+  console.log("|--:|---|---|---|---|--:|--:|--:|--:|");
+  resultats.forEach((r, i) => {
+    const familiesTxt = levels[i].families.map((f) => `${(fams[f.id] && fams[f.id].nom) || f.id}·${f.n}`).join(", ");
+    const senseMov = r["mortLluitant%"] + r["mortCiclant%"];
+    console.log(`| ${r.nivell} | ${r.nom} | ${nomBloc(i)} | ${familiesTxt} | ${dif(r)} (${r.win_ratio ?? "?"}) | ${Math.round(r.ratioBot * 100)}% | ${r.margeMitja} | ${r["bloquejat%"]}% | ${senseMov}% |`);
+  });
+
+  // funnel de progressió: modelat amb la dificultat objectiu (win_ratio).
+  // Els jugadors reintenten cada nivell, així que la probabilitat de superar-lo
+  // és 1-(1-win_ratio)^reintents. Ajusta amb REINTENTS=n node test.js --funnel.
+  const reintents = parseInt(process.env.REINTENTS || "3", 10);
+  console.log(`\n## Funnel de progressió (win_ratio objectiu, fins a ${reintents} intents/nivell)\n`);
+  console.log("Partim del 100% dels jugadors que comencen el nivell 1. Es modela que");
+  console.log(`cadascú prova cada nivell fins a ${reintents} cops abans d'abandonar.\n`);
+  console.log("| # | Nivell | % que hi arriba | % que el supera | abandó al nivell |");
+  console.log("|--:|---|--:|--:|--:|");
+  let arriba = 1;
+  let pitjorDrop = { nivell: null, drop: -1 };
+  resultats.forEach((r, i) => {
+    const wr = r.win_ratio == null ? 1 : r.win_ratio;
+    const pSupera = 1 - Math.pow(1 - wr, reintents);
+    const supera = arriba * pSupera;
+    const abandó = arriba - supera;
+    if (abandó > pitjorDrop.drop) pitjorDrop = { nivell: r.nivell, nom: r.nom, drop: abandó };
+    console.log(`| ${r.nivell} | ${r.nom} | ${(arriba * 100).toFixed(1)}% | ${(supera * 100).toFixed(1)}% | ${(abandó * 100).toFixed(1)}% |`);
+    arriba = supera;
+  });
+  console.log(`\n**Arribada estimada al final (nivell ${resultats.length}):** ${(arriba * 100).toFixed(2)}%`);
+  if (pitjorDrop.nivell != null)
+    console.log(`**Punt de major abandó:** nivell ${pitjorDrop.nivell} «${pitjorDrop.nom}» (${(pitjorDrop.drop * 100).toFixed(1)}% del total).`);
+  console.log("");
+}
 
 // el bot és un jugador "decent però sense planificar" i no s'equivoca mai de
 // família (un humà sí, i cada error resta): als nivells difícils és normal que

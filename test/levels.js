@@ -36,6 +36,19 @@
 //
 // Els nivells temàtics estan intercalats dins del bloc mitjà.
 // ============================================================
+//
+// BLOCS DEL MENÚ (les 3 distincions de dificultat que es veuen
+// a la pantalla d'inici). El joc assigna cada nivell a un bloc
+// per POSICIÓ: els primers `primers` nivells al Tutorial, els
+// últims `ultims` al Repte final, i tota la resta al bloc del
+// mig. Així, quan afegeixis nivells nous al mig, els blocs
+// s'ajusten sols (no cal tocar res aquí).
+// ============================================================
+const BLOCS = [
+  { id: "tutorial", nom: "Tutorial",    emoji: "🌱", primers: 5 },
+  { id: "mig",      nom: "Normal",      emoji: "🐑" },
+  { id: "repte",    nom: "Repte final", emoji: "🔥", ultims: 5 }
+];
 
 const LEVELS = [
 
