@@ -465,6 +465,39 @@ html, body {
   display: inline-block;
 }
 
+/* ===== WIDGET DE COMODINS (a baix a la dreta) ===== */
+#comodins-widget {
+  position: absolute;
+  right: 12px;
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 40;
+}
+#comodins-widget .cw-comptador {
+  background: rgba(0,0,0,.28);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 14px;
+}
+#comodins-widget .cw-comptador b { color: var(--groc); }
+#btn-comodins-info {
+  width: 28px; height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0,0,0,.28);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  font-style: italic;
+  font-family: Georgia, "Times New Roman", serif;
+  cursor: pointer;
+}
+#btn-comodins-info:active { background: rgba(0,0,0,.45); }
+
 /* ===== MISSATGE FLOTANT ===== */
 #missatge-flotant {
   position: absolute;

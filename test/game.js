@@ -20,7 +20,13 @@ if (window.FAMILIES_EXTRA) Object.assign(FAMILIES, window.FAMILIES_EXTRA);
 const EDICIO_ID = window.EDICIO_ID || "amics";
 const RUTA_ARREL = window.RUTA_ARREL || "";
 const VERSIO_JOC = "v30"; // mantenir sincronitzada amb sw.js
-const COMODINS = 3; // comodins 🔍 per defecte a cada nivell (es pot fixar per nivell amb comodins: N)
+// comodins 🔍 per defecte segons el bloc (es pot fixar per nivell amb comodins: N):
+// Tutorial i Normal en tenen 5; Difícil i Infinit, 3.
+function comodinsPerDefecte(idx, infinit) {
+  if (infinit) return 3;
+  const b = rangsBlocs().find((x) => idx >= x.start && idx < x.end);
+  return b && b.id === "dificil" ? 3 : 5;
+}
 
 // ---------- utilitats ----------
 const $ = (sel) => document.querySelector(sel);
@@ -119,7 +125,7 @@ function iniciaPartida(niv, idx, infinit) {
     infinit: !!infinit,
     nomNivell: niv.nom,
     moviments: niv.moviments,
-    comodins: niv.comodins != null ? niv.comodins : COMODINS,
+    comodins: niv.comodins != null ? niv.comodins : comodinsPerDefecte(idx, infinit),
     columnes,
     pila: barrejada, // la resta va a la pila de robar
     descart: [],
@@ -694,8 +700,10 @@ function renderitza() {
     ? `♾️ ${estat.nomNivell}`
     : `Nivell ${estat.nivellIdx + 1} · ${estat.nomNivell}`;
   const cm = $("#comptador-moviments");
-  cm.innerHTML = `Moviments: <b>${estat.moviments}</b> · 🔍 <b>${estat.comodins}</b>`;
+  cm.innerHTML = `Moviments: <b>${estat.moviments}</b>`;
   cm.classList.toggle("alerta", estat.moviments <= 5);
+  const cw = $("#comodins-compte");
+  if (cw) cw.textContent = estat.comodins;
   $("#btn-desfer").disabled = !estat.historial.length;
 
   pintaFundacions();
@@ -992,6 +1000,10 @@ $("#btn-desfer").addEventListener("click", desfer);
 $("#btn-reiniciar").addEventListener("click", () => nouNivell(estat.nivellIdx));
 $("#btn-inici").addEventListener("click", vesAInici);
 $("#btn-tornar-blocs").addEventListener("click", () => { blocSeleccionat = null; pintaGraellaNivells(); });
+$("#btn-comodins-info").addEventListener("click", () => {
+  const queden = estat ? ` Te'n queden ${estat.comodins}.` : "";
+  missatge("🔍 Comodí: mantén premuda una carta (click & hold) i et dirà la seva definició, per ajudar-te a endevinar la família. Cada consulta gasta un comodí." + queden, 5500);
+});
 $("#btn-admin").addEventListener("click", () => {
   if (adminActiu()) {
     localStorage.setItem(clau("admin"), "0"); // desactivar no demana contrasenya
