@@ -199,9 +199,10 @@ if (funnelMode) {
   const blocs = vm.runInContext("typeof BLOCS !== 'undefined' ? BLOCS : null", sandbox);
   const nomBloc = (i) => {
     if (!blocs || !blocs.length) return "";
-    const primers = blocs[0].primers || 0, ultims = blocs[blocs.length - 1].ultims || 0;
-    const b = i < primers ? blocs[0] : (i >= levels.length - ultims ? blocs[blocs.length - 1] : blocs[1]);
-    return `${b.emoji} ${b.nom}`;
+    let acc = 0;
+    for (const b of blocs) { acc += b.mida || 0; if (i < acc) return `${b.emoji} ${b.nom}`; }
+    const u = blocs[blocs.length - 1];
+    return `${u.emoji} ${u.nom}`;
   };
   const dif = (r) => r.win_ratio == null ? "?" :
     r.win_ratio >= 0.8 ? "Molt fàcil" : r.win_ratio >= 0.6 ? "Fàcil" :

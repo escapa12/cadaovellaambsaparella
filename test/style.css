@@ -70,21 +70,41 @@ html, body {
   margin-bottom: 30px;
 }
 
-/* capçalera de cada bloc de dificultat (Tutorial / Normal / Repte final) */
-.bloc-titol {
-  grid-column: 1 / -1;
-  text-align: center;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: .5px;
-  text-transform: uppercase;
-  opacity: .92;
-  margin: 10px 0 -4px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255,255,255,.18);
-  text-shadow: 0 1px 0 rgba(0,0,0,.25);
+/* ===== MENÚ DE BLOCS (3 botons: Tutorial / Normal / Difícil) ===== */
+#menu-blocs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(320px, 86vw);
+  margin-bottom: 24px;
 }
-.bloc-titol:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+.btn-bloc {
+  border: none;
+  border-radius: 18px;
+  background: var(--crema);
+  color: var(--verd-fosc);
+  box-shadow: 0 5px 0 rgba(0,0,0,.25);
+  cursor: pointer;
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+}
+.btn-bloc:active { transform: translateY(2px); box-shadow: 0 3px 0 rgba(0,0,0,.25); }
+.btn-bloc .bloc-emoji { font-size: 30px; }
+.btn-bloc .bloc-nom { font-size: 19px; font-weight: 800; }
+.btn-bloc .bloc-prog { font-size: 12px; font-weight: 700; opacity: .7; }
+.btn-bloc.complet { outline: 3px solid var(--groc); }
+.btn-bloc.bloquejat {
+  background: rgba(255,255,255,.16);
+  color: rgba(255,255,255,.6);
+  box-shadow: none;
+  cursor: default;
+}
+.btn-bloc.bloquejat .bloc-prog { opacity: .6; }
+#btn-tornar-blocs { align-self: center; font-size: 15px; margin-bottom: 6px; }
 
 .btn-nivell {
   width: 70px; height: 70px;

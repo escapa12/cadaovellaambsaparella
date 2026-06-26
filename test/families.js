@@ -521,5 +521,74 @@ const FAMILIES = {
     nom: "Salses",
     emoji: "🥫",
     paraules: ["Pesto", "Bolonyesa", "Beixamel", "Pomodoro", "Allioli", "Maionesa", "Tàrtara", "Romesco", "Quetxup", "Mostassa"]
+  },
+
+  // ============================================================
+  // FAMÍLIES NOVES (estil "traïdor": paraules ambigües)
+  // ============================================================
+  balls: {
+    nom: "Balls",
+    emoji: "💃",
+    paraules: ["Vals", "Tango", "Bolero", "Xotis", "Jota", "Fandango", "Pasdoble", "Rumba", "Polca", "Txa-txa-txà"]
+  },
+  monedes: {
+    nom: "Monedes",
+    emoji: "🪙",
+    paraules: ["Florí", "Dracma", "Escut", "Ducat", "Xíling", "Rupia", "Còrdova", "Lempira", "Ral", "Marc"]
+  },
+  bolets: {
+    nom: "Bolets",
+    emoji: "🍄",
+    paraules: ["Rovelló", "Múrgola", "Camagroc", "Fredolic", "Llenega", "Carlet", "Ou de reig", "Cep", "Trompeta", "Pixacà"]
+  },
+  nautica: {
+    nom: "Nàutica",
+    emoji: "⛵",
+    paraules: ["Proa", "Popa", "Quilla", "Timó", "Babord", "Estribord", "Coberta", "Àncora", "Pal", "Bauprès"]
+  },
+  constel: {
+    nom: "Constel·lacions",
+    emoji: "✨",
+    paraules: ["Orió", "Lira", "Cigne", "Pegàs", "Andròmeda", "Cassiopea", "Drac", "Balena", "Bover", "Óssa"]
+  },
+  mitologia: {
+    nom: "Mitologia",
+    emoji: "⚡",
+    paraules: ["Zeus", "Apol·lo", "Hermes", "Atena", "Hades", "Posidó", "Hefest", "Àrtemis", "Demèter", "Ares"]
+  },
+  criatures: {
+    nom: "Criatures",
+    emoji: "🐉",
+    paraules: ["Esfinx", "Hidra", "Quimera", "Grifó", "Centaure", "Minotaure", "Basilisc", "Cíclop", "Sirena", "Harpia"]
+  },
+  cafes: {
+    nom: "Cafès",
+    emoji: "☕",
+    paraules: ["Tallat", "Caputxino", "Espresso", "Americà", "Bombó", "Carajillo", "Ristretto", "Cremat", "Vienès", "Macchiato"]
+  },
+  marisc: {
+    nom: "Marisc",
+    emoji: "🦑",
+    paraules: ["Pop", "Sípia", "Calamar", "Musclo", "Escopinya", "Cloïssa", "Ostra", "Navalla", "Garota", "Cargol"]
+  },
+  herbes: {
+    nom: "Herbes",
+    emoji: "🌿",
+    paraules: ["Camamilla", "Til·la", "Marduix", "Sàlvia", "Farigola", "Romaní", "Menta", "Melissa", "Berbena", "Saüc"]
+  },
+  castells: {
+    nom: "Castells medievals",
+    emoji: "🏰",
+    paraules: ["Merlet", "Fossat", "Torreó", "Muralla", "Talaia", "Almena", "Matacà", "Rastell", "Aljub", "Lliça"]
+  },
+  eines_camp: {
+    nom: "Eines del camp",
+    emoji: "🌾",
+    paraules: ["Falç", "Aixada", "Rascle", "Forca", "Càvec", "Arada", "Garbell", "Dalla", "Sàrria", "Bieldo"]
+  },
+  nuvols: {
+    nom: "Núvols",
+    emoji: "☁️",
+    paraules: ["Cúmul", "Cirrus", "Estrat", "Nimbus", "Cirrocúmul", "Altostrat", "Lenticular", "Estratocúmul"]
   }
 };

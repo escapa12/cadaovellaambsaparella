@@ -1,63 +1,43 @@
 // ============================================================
 // CONFIGURACIÓ DELS NIVELLS
 // ============================================================
-// Cada nivell és un objecte amb:
-//
 //   nom:        nom del nivell
 //   moviments:  límit de moviments (robar carta també compta;
 //               els errors de família resten cada cop més!)
 //   espais:     quants espais de col·lecció hi ha a dalt
-//   win_ratio:  ràtio de victòries esperada (0 a 1). Referència
-//               de dificultat que valida test.js.
+//   win_ratio:  ràtio de victòries esperada (0 a 1). Objectiu de
+//               disseny humà que valida test.js.
 //   families:   quines famílies hi surten i quantes paraules
-//               de cada una, p. ex. { id: "fruites", n: 6 }
-//               (les claus han d'existir a families.js).
-//               Les "n" poden ser ben diferents, màxim 9.
-//   columnes:   cartes per columna del tauler, en patró
-//               TRIANGULAR: columnes curtes a l'esquerra i
-//               llargues (amb més tapades) a la dreta.
-//               Només la carta de dalt comença destapada.
+//               de cada una, p. ex. { id: "fruites", n: 6 } (màx 9).
+//   columnes:   cartes per columna del tauler, en patró TRIANGULAR.
 //
-// El joc afegeix automàticament 1 carta mestra 👑 per família:
-// el total de cartes és (suma de n) + (nombre de famílies).
+// El joc afegeix automàticament 1 carta mestra 👑 per família.
 // Les cartes que no caben a les columnes van a la pila de robar.
-//
-// Compte: no barregis al mateix nivell famílies que comparteixen
-// una paraula (p. ex. Joies i Mà tenen "Anell"); test.js i el
-// mateix joc t'avisaran si passa.
+// No barregis al mateix nivell famílies que comparteixen una
+// paraula; test.js i el mateix joc t'avisaran.
 // ============================================================
 //
-// ESTRUCTURA EN 3 BLOCS:
-//   · Nivells 1-5  → TUTORIAL (suau; el 5è una mica més fort)
-//   · Nivells 6-23 → BLOC MITJÀ (dificultat OSCIL·LANT, mai tan
-//                     dura com el gran repte). Els nivells nous
-//                     van aquí per defecte.
-//   · Nivells 24-28 → GRAN REPTE (els més difícils)
+// ESTRUCTURA EN 3 BLOCS (es veuen al menú com a 3 botons):
+//   · 🌱 TUTORIAL (1-5)   → introducció, molt fàcil
+//   · 🐑 NORMAL   (6-30)  → dificultat oscil·lant; el 30 fa de boss
+//   · 🔥 DIFÍCIL  (31-55) → més dur; els 5 últims <20%, el 55 boss final
 //
-// Els nivells temàtics estan intercalats dins del bloc mitjà.
-// ============================================================
-//
-// BLOCS DEL MENÚ (les 3 distincions de dificultat que es veuen
-// a la pantalla d'inici). El joc assigna cada nivell a un bloc
-// per POSICIÓ: els primers `primers` nivells al Tutorial, els
-// últims `ultims` al Repte final, i tota la resta al bloc del
-// mig. Així, quan afegeixis nivells nous al mig, els blocs
-// s'ajusten sols (no cal tocar res aquí).
+// El darrer nivell de cada bloc és clarament el més difícil del bloc.
 // ============================================================
 const BLOCS = [
-  { id: "tutorial", nom: "Tutorial",    emoji: "🌱", primers: 5 },
-  { id: "mig",      nom: "Normal",      emoji: "🐑" },
-  { id: "repte",    nom: "Repte final", emoji: "🔥", ultims: 5 }
+  { id: "tutorial", nom: "Tutorial", emoji: "🌱", mida: 5 },
+  { id: "normal",   nom: "Normal",   emoji: "🐑", mida: 25 },
+  { id: "dificil",  nom: "Difícil",  emoji: "🔥", mida: 25 }
 ];
 
 const LEVELS = [
 
   // ========================================================
-  // BLOC 1 · TUTORIAL (1-5)
+  // 🌱 BLOC 1 · TUTORIAL (1-5)
   // ========================================================
   {
     nom: "Primeres passes",
-    moviments: 40,
+    moviments: 64,
     espais: 2,
     win_ratio: 0.95,
     families: [
@@ -70,7 +50,7 @@ const LEVELS = [
   },
   {
     nom: "Senyals al camí",
-    moviments: 52,
+    moviments: 86,
     espais: 2,
     win_ratio: 0.9,
     families: [
@@ -84,9 +64,9 @@ const LEVELS = [
   },
   {
     nom: "Amb el Pau",
-    moviments: 62,
+    moviments: 102,
     espais: 2,
-    win_ratio: 0.86,
+    win_ratio: 0.93,
     families: [
       { id: "escacs", n: 6 },
       { id: "pau_mas", n: 6 },
@@ -98,9 +78,9 @@ const LEVELS = [
   },
   {
     nom: "Amb la Lupe",
-    moviments: 76,
+    moviments: 120,
     espais: 3,
-    win_ratio: 0.82,
+    win_ratio: 0.88,
     families: [
       { id: "joies", n: 6 },
       { id: "lupe", n: 5 },
@@ -112,10 +92,11 @@ const LEVELS = [
     columnes: [2, 3, 4, 5]
   },
   {
+    // boss del tutorial
     nom: "La volta al món",
-    moviments: 85,
+    moviments: 152,
     espais: 4,
-    win_ratio: 0.76,
+    win_ratio: 0.72,
     families: [
       { id: "paisos", n: 6 },
       { id: "animals", n: 7 },
@@ -130,14 +111,13 @@ const LEVELS = [
   },
 
   // ========================================================
-  // BLOC 2 · MITJÀ (6-20) · dificultat oscil·lant
+  // 🐑 BLOC 2 · NORMAL (6-30) · oscil·lant; el 30 fa de boss
   // ========================================================
   {
-    // temàtic GEOGRAFIA (versió fàcil: rius/muntanyes/mars/llacs CONEGUTS)
     nom: "Geografia: primer viatge",
-    moviments: 68,
+    moviments: 90,
     espais: 4,
-    win_ratio: 0.7,
+    win_ratio: 0.72,
     families: [
       { id: "rius_facils", n: 5 },
       { id: "muntanyes_facils", n: 5 },
@@ -149,9 +129,9 @@ const LEVELS = [
   },
   {
     nom: "Set famílies (i mitja)",
-    moviments: 102,
+    moviments: 162,
     espais: 4,
-    win_ratio: 0.58,
+    win_ratio: 0.6,
     families: [
       { id: "senyals", n: 6 },
       { id: "mobles", n: 8 },
@@ -163,14 +143,13 @@ const LEVELS = [
       { id: "nba", n: 5 },
       { id: "cuina", n: 4 }
     ],
-    columnes: [3, 4, 5, 5, 6]
+    columnes: [3, 4, 5, 5, 6, 6]
   },
   {
-    // temàtic CULTURA (versió fàcil: noms MOLT coneguts)
     nom: "Cultura general",
-    moviments: 58,
+    moviments: 94,
     espais: 4,
-    win_ratio: 0.68,
+    win_ratio: 0.7,
     families: [
       { id: "musics_facils", n: 5 },
       { id: "escriptors_facils", n: 5 },
@@ -182,7 +161,7 @@ const LEVELS = [
   },
   {
     nom: "El Marc i l'Aina",
-    moviments: 78,
+    moviments: 130,
     espais: 4,
     win_ratio: 0.62,
     families: [
@@ -194,30 +173,27 @@ const LEVELS = [
       { id: "fruites", n: 5 },
       { id: "oficis", n: 4 }
     ],
-    columnes: [2, 3, 4, 5, 6]
-  },
-  {
-    // temàtic ESPORTS
-    nom: "Esports",
-    moviments: 62,
-    espais: 4,
-    win_ratio: 0.66,
-    families: [
-      { id: "esports", n: 6 },
-      { id: "nba", n: 6 },
-      { id: "clubs", n: 6 },
-      { id: "olimpiades", n: 5 },
-      { id: "escacs", n: 5 },
-      { id: "musculs", n: 5 }
-    ],
     columnes: [3, 4, 5, 6, 7]
   },
   {
-    // temàtic MENJAR (italià + xarcuteria)
-    nom: "El tiberi",
-    moviments: 64,
+    nom: "Cafès i tiberi",
+    moviments: 92,
     espais: 4,
-    win_ratio: 0.62,
+    win_ratio: 0.68,
+    families: [
+      { id: "cafes", n: 6 },
+      { id: "pizzes", n: 6 },
+      { id: "pastes", n: 5 },
+      { id: "begudes", n: 5 },
+      { id: "postres", n: 5 }
+    ],
+    columnes: [2, 3, 4, 5, 6]
+  },
+  {
+    nom: "El tiberi",
+    moviments: 92,
+    espais: 4,
+    win_ratio: 0.58,
     families: [
       { id: "pizzes", n: 6 },
       { id: "pastes", n: 6 },
@@ -225,29 +201,25 @@ const LEVELS = [
       { id: "embotits", n: 6 },
       { id: "salses", n: 5 }
     ],
-    columnes: [3, 4, 5, 6, 7]
+    columnes: [2, 3, 4, 5, 6]
   },
   {
-    nom: "Nivell dels amics",
-    moviments: 108,
+    nom: "Festa major",
+    moviments: 90,
     espais: 4,
-    win_ratio: 0.54,
+    win_ratio: 0.66,
     families: [
-      { id: "pau_mas", n: 5 },
-      { id: "marc_granado", n: 6 },
-      { id: "mariona", n: 6 },
-      { id: "lupe", n: 4 },
-      { id: "aina", n: 5 },
-      { id: "residencies", n: 5 },
-      { id: "ma", n: 4 },
-      { id: "senyals", n: 5 },
-      { id: "nba", n: 4 }
+      { id: "balls", n: 6 },
+      { id: "festes", n: 5 },
+      { id: "instruments", n: 5 },
+      { id: "begudes", n: 5 },
+      { id: "roba", n: 5 }
     ],
-    columnes: [3, 4, 5, 6, 7]
+    columnes: [2, 3, 4, 5, 6]
   },
   {
     nom: "Cares noves",
-    moviments: 96,
+    moviments: 130,
     espais: 4,
     win_ratio: 0.56,
     families: [
@@ -263,26 +235,24 @@ const LEVELS = [
     columnes: [3, 4, 5, 6, 7]
   },
   {
-    // temàtic CIÈNCIA
-    nom: "Ciència",
-    moviments: 60,
+    nom: "Bosc i camp",
+    moviments: 90,
     espais: 4,
-    win_ratio: 0.64,
+    win_ratio: 0.68,
     families: [
-      { id: "elements", n: 6 },
-      { id: "planetes", n: 6 },
-      { id: "unitats", n: 6 },
-      { id: "cos", n: 5 },
-      { id: "ossos", n: 5 },
-      { id: "musculs", n: 4 }
+      { id: "bolets", n: 6 },
+      { id: "arbres", n: 5 },
+      { id: "flors", n: 5 },
+      { id: "aus", n: 5 },
+      { id: "herbes", n: 5 }
     ],
-    columnes: [3, 4, 5, 6, 7]
+    columnes: [2, 3, 4, 5, 6]
   },
   {
     nom: "Anatomia",
-    moviments: 110,
+    moviments: 138,
     espais: 4,
-    win_ratio: 0.52,
+    win_ratio: 0.54,
     families: [
       { id: "cos", n: 6 },
       { id: "ossos", n: 6 },
@@ -296,65 +266,62 @@ const LEVELS = [
     columnes: [4, 5, 6, 7, 8]
   },
   {
-    // temàtic CATALUNYA
-    nom: "Tot Catalunya",
-    moviments: 62,
+    nom: "Mercat i monedes",
+    moviments: 90,
     espais: 4,
-    win_ratio: 0.62,
+    win_ratio: 0.64,
     families: [
-      { id: "comarques", n: 6 },
-      { id: "simbols", n: 6 },
-      { id: "capitals", n: 6 },
-      { id: "festes", n: 5 },
-      { id: "rius", n: 5 },
-      { id: "residencies", n: 4 }
+      { id: "monedes", n: 6 },
+      { id: "oficis", n: 5 },
+      { id: "eines", n: 5 },
+      { id: "teixits", n: 5 },
+      { id: "especies", n: 5 }
     ],
-    columnes: [4, 5, 6, 7]
+    columnes: [2, 3, 4, 5, 6]
   },
   {
-    nom: "El gran repte",
-    moviments: 138,
-    espais: 4,
-    win_ratio: 0.5,
+    nom: "El gran batibull",
+    moviments: 164,
+    espais: 5,
+    win_ratio: 0.56,
     families: [
       { id: "colors", n: 5 },
-      { id: "vehicles", n: 7 },
+      { id: "vehicles", n: 6 },
       { id: "temps", n: 5 },
-      { id: "capitals", n: 8 },
+      { id: "capitals", n: 7 },
       { id: "festes", n: 5 },
-      { id: "esports", n: 6 },
-      { id: "escacs", n: 6 },
-      { id: "joies", n: 6 },
+      { id: "esports", n: 5 },
+      { id: "escacs", n: 5 },
+      { id: "joies", n: 4 },
       { id: "senyals", n: 5 },
       { id: "arbres", n: 4 }
     ],
     columnes: [3, 4, 5, 6, 7, 8]
   },
   {
-    // temàtic MATEMÀTIQUES
-    nom: "Matemàtiques",
-    moviments: 54,
+    nom: "Mar i costa",
+    moviments: 90,
     espais: 4,
-    win_ratio: 0.6,
+    win_ratio: 0.66,
     families: [
-      { id: "branques", n: 7 },
-      { id: "operacions", n: 7 },
-      { id: "objectes_mates", n: 7 },
-      { id: "matematics", n: 6 },
-      { id: "unitats", n: 5 }
+      { id: "nautica", n: 6 },
+      { id: "marisc", n: 6 },
+      { id: "peixos", n: 5 },
+      { id: "mars_facils", n: 5 },
+      { id: "llacs_facils", n: 4 }
     ],
-    columnes: [4, 5, 6, 7, 8]
+    columnes: [2, 3, 4, 5, 6]
   },
   {
     nom: "Escapada de cap de setmana",
-    moviments: 116,
-    espais: 4,
-    win_ratio: 0.5,
+    moviments: 156,
+    espais: 5,
+    win_ratio: 0.54,
     families: [
       { id: "residencies", n: 6 },
-      { id: "capitals", n: 7 },
-      { id: "paisos", n: 6 },
-      { id: "vehicles", n: 6 },
+      { id: "capitals", n: 6 },
+      { id: "paisos", n: 5 },
+      { id: "vehicles", n: 5 },
       { id: "begudes", n: 5 },
       { id: "temps", n: 5 },
       { id: "festes", n: 5 },
@@ -365,63 +332,56 @@ const LEVELS = [
     columnes: [3, 4, 5, 6, 7, 8]
   },
   {
-    // temàtic POBLACIONS
     nom: "Pobles i ciutats",
-    moviments: 60,
+    moviments: 110,
     espais: 4,
-    win_ratio: 0.58,
+    win_ratio: 0.62,
     families: [
-      { id: "pobles", n: 7 },
-      { id: "capitals", n: 7 },
+      { id: "pobles", n: 6 },
+      { id: "capitals", n: 6 },
       { id: "comarques", n: 6 },
-      { id: "muntanyes", n: 5 },
-      { id: "rius", n: 5 },
-      { id: "residencies", n: 5 }
+      { id: "muntanyes_facils", n: 5 },
+      { id: "rius_facils", n: 5 },
+      { id: "residencies", n: 4 }
     ],
-    columnes: [4, 5, 6, 7, 8]
+    columnes: [3, 4, 5, 6, 7]
   },
   {
-    nom: "La lliga",
-    moviments: 132,
-    espais: 5,
-    win_ratio: 0.5,
+    nom: "Cel nocturn",
+    moviments: 72,
+    espais: 4,
+    win_ratio: 0.56,
     families: [
-      { id: "nba", n: 8 },
-      { id: "esports", n: 6 },
-      { id: "escacs", n: 6 },
-      { id: "musculs", n: 5 },
-      { id: "cos", n: 5 },
-      { id: "marc_granado", n: 6 },
-      { id: "colors", n: 5 },
-      { id: "aina", n: 5 },
-      { id: "ossos", n: 4 },
-      { id: "ma", n: 4 }
+      { id: "constel", n: 6 },
+      { id: "nuvols", n: 6 },
+      { id: "planetes", n: 6 },
+      { id: "temps", n: 5 }
     ],
-    columnes: [4, 5, 6, 7, 8]
+    columnes: [3, 4, 5, 6]
   },
   {
     nom: "El rebost",
-    moviments: 108,
+    moviments: 172,
     espais: 5,
-    win_ratio: 0.56,
+    win_ratio: 0.62,
     families: [
-      { id: "verdures", n: 7 },
-      { id: "cuina", n: 7 },
-      { id: "begudes", n: 6 },
-      { id: "fruites", n: 7 },
+      { id: "verdures", n: 6 },
+      { id: "cuina", n: 6 },
+      { id: "begudes", n: 5 },
+      { id: "fruites", n: 6 },
       { id: "mobles", n: 6 },
-      { id: "oficis", n: 6 },
-      { id: "roba", n: 5 },
+      { id: "oficis", n: 5 },
+      { id: "roba", n: 4 },
       { id: "animals", n: 5 },
       { id: "festes", n: 3 },
       { id: "joies", n: 3 }
     ],
-    columnes: [4, 5, 6, 7, 8, 9]
+    columnes: [4, 5, 6, 7, 8]
   },
   {
     nom: "Tota la colla",
-    moviments: 104,
-    espais: 5,
+    moviments: 144,
+    espais: 4,
     win_ratio: 0.54,
     families: [
       { id: "marquina", n: 6 },
@@ -435,16 +395,125 @@ const LEVELS = [
     ],
     columnes: [4, 5, 6, 7, 8]
   },
+  {
+    nom: "Matemàtiques",
+    moviments: 108,
+    espais: 4,
+    win_ratio: 0.6,
+    families: [
+      { id: "branques", n: 7 },
+      { id: "operacions", n: 7 },
+      { id: "objectes_mates", n: 7 },
+      { id: "matematics", n: 6 },
+      { id: "unitats", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7]
+  },
+  {
+    nom: "Llegendes",
+    moviments: 86,
+    espais: 4,
+    win_ratio: 0.56,
+    families: [
+      { id: "mitologia", n: 6 },
+      { id: "criatures", n: 6 },
+      { id: "escacs", n: 5 },
+      { id: "joies", n: 5 },
+      { id: "paisos", n: 5 }
+    ],
+    columnes: [2, 3, 4, 5, 6]
+  },
+  {
+    nom: "Edat mitjana",
+    moviments: 110,
+    espais: 4,
+    win_ratio: 0.58,
+    families: [
+      { id: "castells", n: 6 },
+      { id: "monedes", n: 6 },
+      { id: "mitologia", n: 6 },
+      { id: "criatures", n: 6 },
+      { id: "eines_camp", n: 6 },
+      { id: "oficis", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7]
+  },
+  {
+    nom: "Anatomia avançada",
+    moviments: 108,
+    espais: 4,
+    win_ratio: 0.52,
+    families: [
+      { id: "cos", n: 6 },
+      { id: "ossos", n: 6 },
+      { id: "musculs", n: 6 },
+      { id: "diacritics", n: 6 },
+      { id: "ma", n: 5 },
+      { id: "especies", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7]
+  },
+  {
+    nom: "Ciència i cosmos",
+    moviments: 106,
+    espais: 4,
+    win_ratio: 0.56,
+    families: [
+      { id: "elements", n: 6 },
+      { id: "planetes", n: 6 },
+      { id: "unitats", n: 6 },
+      { id: "constel", n: 5 },
+      { id: "nuvols", n: 5 },
+      { id: "minerals", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7]
+  },
+  {
+    nom: "La lliga",
+    moviments: 172,
+    espais: 5,
+    win_ratio: 0.52,
+    families: [
+      { id: "nba", n: 8 },
+      { id: "esports", n: 6 },
+      { id: "escacs", n: 6 },
+      { id: "musculs", n: 5 },
+      { id: "cos", n: 5 },
+      { id: "marc_granado", n: 6 },
+      { id: "colors", n: 5 },
+      { id: "aina", n: 5 },
+      { id: "ossos", n: 4 },
+      { id: "ma", n: 4 }
+    ],
+    columnes: [4, 5, 6, 7, 8, 9]
+  },
+  {
+    // boss del bloc Normal
+    nom: "Calaix de sastre",
+    moviments: 130,
+    espais: 4,
+    win_ratio: 0.4,
+    families: [
+      { id: "eines", n: 6 },
+      { id: "teixits", n: 6 },
+      { id: "insectes", n: 6 },
+      { id: "minerals", n: 6 },
+      { id: "especies", n: 5 },
+      { id: "flors", n: 5 },
+      { id: "aus", n: 5 },
+      { id: "peixos", n: 5 }
+    ],
+    columnes: [4, 5, 6, 7, 8]
+  },
 
   // ========================================================
-  // BLOC 3 · GRAN REPTE (24-28)
+  // 🔥 BLOC 3 · DIFÍCIL (31-55) · els 5 últims <20%; el 55 boss
   // ========================================================
   {
-    // temàtic GEOGRAFIA (versió difícil: rius/muntanyes/mars/llacs POC CONEGUTS)
-    nom: "Geografia: el repte mundial",
-    moviments: 70,
+    nom: "Geografia: repte mundial",
+    moviments: 140,
     espais: 4,
-    win_ratio: 0.42,
+    win_ratio: 0.5,
     families: [
       { id: "rius", n: 7 },
       { id: "muntanyes", n: 7 },
@@ -454,13 +523,13 @@ const LEVELS = [
       { id: "capitals", n: 6 },
       { id: "paisos", n: 5 }
     ],
-    columnes: [4, 5, 6, 7, 8, 9]
+    columnes: [4, 5, 6, 7, 8]
   },
   {
     nom: "Paraulada",
-    moviments: 113,
+    moviments: 182,
     espais: 5,
-    win_ratio: 0.36,
+    win_ratio: 0.4,
     families: [
       { id: "diacritics", n: 8 },
       { id: "capitals", n: 6 },
@@ -477,11 +546,10 @@ const LEVELS = [
     columnes: [4, 5, 6, 7, 8, 9]
   },
   {
-    // temàtic CULTURA (versió difícil)
     nom: "Cultura: nivell expert",
-    moviments: 52,
+    moviments: 108,
     espais: 4,
-    win_ratio: 0.32,
+    win_ratio: 0.48,
     families: [
       { id: "musics", n: 8 },
       { id: "escriptors", n: 8 },
@@ -489,13 +557,13 @@ const LEVELS = [
       { id: "cientifics", n: 8 },
       { id: "instruments", n: 6 }
     ],
-    columnes: [4, 5, 6, 7, 8, 9]
+    columnes: [3, 4, 5, 6, 7]
   },
   {
     nom: "Tots els amics",
-    moviments: 127,
+    moviments: 172,
     espais: 5,
-    win_ratio: 0.28,
+    win_ratio: 0.38,
     families: [
       { id: "pau_mas", n: 6 },
       { id: "marc_granado", n: 8 },
@@ -509,13 +577,359 @@ const LEVELS = [
       { id: "senyals", n: 3 },
       { id: "capitals", n: 4 }
     ],
+    columnes: [4, 5, 6, 7, 8, 9]
+  },
+  {
+    nom: "Tresor i mercaderies",
+    moviments: 102,
+    espais: 4,
+    win_ratio: 0.46,
+    families: [
+      { id: "monedes", n: 6 },
+      { id: "minerals", n: 6 },
+      { id: "especies", n: 6 },
+      { id: "teixits", n: 6 },
+      { id: "eines", n: 6 },
+      { id: "joies", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7]
+  },
+  {
+    nom: "Anatomia total",
+    moviments: 124,
+    espais: 4,
+    win_ratio: 0.36,
+    families: [
+      { id: "cos", n: 6 },
+      { id: "ossos", n: 6 },
+      { id: "musculs", n: 6 },
+      { id: "diacritics", n: 6 },
+      { id: "animals", n: 6 },
+      { id: "verdures", n: 6 },
+      { id: "especies", n: 5 },
+      { id: "temps", n: 4 }
+    ],
     columnes: [4, 5, 6, 7, 8]
   },
   {
-    nom: "L'infern de les ovelles",
-    moviments: 132,
+    nom: "Tempesta a alta mar",
+    moviments: 108,
+    espais: 4,
+    win_ratio: 0.46,
+    families: [
+      { id: "nautica", n: 7 },
+      { id: "marisc", n: 7 },
+      { id: "peixos", n: 6 },
+      { id: "mars", n: 6 },
+      { id: "llacs", n: 6 },
+      { id: "rius", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7]
+  },
+  {
+    nom: "El garbuix",
+    moviments: 162,
     espais: 5,
-    win_ratio: 0.24,
+    win_ratio: 0.34,
+    families: [
+      { id: "colors", n: 5 },
+      { id: "vehicles", n: 6 },
+      { id: "capitals", n: 6 },
+      { id: "festes", n: 5 },
+      { id: "esports", n: 5 },
+      { id: "escacs", n: 5 },
+      { id: "joies", n: 5 },
+      { id: "senyals", n: 5 },
+      { id: "arbres", n: 5 },
+      { id: "mobles", n: 6 },
+      { id: "temps", n: 5 }
+    ],
+    columnes: [4, 5, 6, 7, 8, 9]
+  },
+  {
+    nom: "Natura amagada",
+    moviments: 118,
+    espais: 4,
+    win_ratio: 0.44,
+    families: [
+      { id: "bolets", n: 6 },
+      { id: "herbes", n: 6 },
+      { id: "flors", n: 6 },
+      { id: "aus", n: 6 },
+      { id: "insectes", n: 6 },
+      { id: "arbres", n: 5 },
+      { id: "especies", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7, 8]
+  },
+  {
+    nom: "La colla difícil",
+    moviments: 158,
+    espais: 5,
+    win_ratio: 0.36,
+    families: [
+      { id: "marquina", n: 6 },
+      { id: "carbo", n: 6 },
+      { id: "montcada", n: 6 },
+      { id: "buxo", n: 6 },
+      { id: "ivet", n: 6 },
+      { id: "pere", n: 6 },
+      { id: "pol", n: 6 },
+      { id: "capitals", n: 5 },
+      { id: "nba", n: 5 },
+      { id: "escacs", n: 5 }
+    ],
+    columnes: [4, 5, 6, 7, 8, 9]
+  },
+  {
+    nom: "Cosmos profund",
+    moviments: 100,
+    espais: 4,
+    win_ratio: 0.44,
+    families: [
+      { id: "constel", n: 6 },
+      { id: "nuvols", n: 6 },
+      { id: "planetes", n: 6 },
+      { id: "elements", n: 6 },
+      { id: "unitats", n: 5 },
+      { id: "minerals", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7]
+  },
+  {
+    nom: "Llegendes i mites",
+    moviments: 96,
+    espais: 4,
+    win_ratio: 0.34,
+    families: [
+      { id: "mitologia", n: 7 },
+      { id: "criatures", n: 7 },
+      { id: "escacs", n: 5 },
+      { id: "diacritics", n: 6 },
+      { id: "capitals", n: 5 },
+      { id: "joies", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7]
+  },
+  {
+    nom: "Setge medieval",
+    moviments: 106,
+    espais: 4,
+    win_ratio: 0.44,
+    families: [
+      { id: "castells", n: 7 },
+      { id: "monedes", n: 6 },
+      { id: "eines_camp", n: 6 },
+      { id: "oficis", n: 6 },
+      { id: "mitologia", n: 6 },
+      { id: "residencies", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7]
+  },
+  {
+    nom: "Paraulada II",
+    moviments: 160,
+    espais: 5,
+    win_ratio: 0.32,
+    families: [
+      { id: "diacritics", n: 7 },
+      { id: "ma", n: 5 },
+      { id: "ossos", n: 5 },
+      { id: "colors", n: 5 },
+      { id: "senyals", n: 5 },
+      { id: "capitals", n: 6 },
+      { id: "cuina", n: 5 },
+      { id: "temps", n: 5 },
+      { id: "esports", n: 4 },
+      { id: "instruments", n: 5 },
+      { id: "arbres", n: 5 }
+    ],
+    columnes: [4, 5, 6, 7, 8, 9]
+  },
+  {
+    nom: "Nit de gala",
+    moviments: 96,
+    espais: 4,
+    win_ratio: 0.42,
+    families: [
+      { id: "balls", n: 6 },
+      { id: "cafes", n: 6 },
+      { id: "begudes", n: 5 },
+      { id: "roba", n: 5 },
+      { id: "instruments", n: 5 },
+      { id: "festes", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7]
+  },
+  {
+    nom: "El rebost ple",
+    moviments: 150,
+    espais: 5,
+    win_ratio: 0.34,
+    families: [
+      { id: "verdures", n: 6 },
+      { id: "cuina", n: 6 },
+      { id: "begudes", n: 6 },
+      { id: "fruites", n: 6 },
+      { id: "mobles", n: 6 },
+      { id: "oficis", n: 6 },
+      { id: "roba", n: 5 },
+      { id: "animals", n: 5 },
+      { id: "especies", n: 4 },
+      { id: "peixos", n: 4 }
+    ],
+    columnes: [4, 5, 6, 7, 8, 9]
+  },
+  {
+    nom: "Sobretaula",
+    moviments: 118,
+    espais: 4,
+    win_ratio: 0.42,
+    families: [
+      { id: "cafes", n: 6 },
+      { id: "pizzes", n: 6 },
+      { id: "pastes", n: 6 },
+      { id: "formatges", n: 6 },
+      { id: "embotits", n: 6 },
+      { id: "salses", n: 5 },
+      { id: "begudes", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7, 8]
+  },
+  {
+    nom: "Catalunya a fons",
+    moviments: 126,
+    espais: 4,
+    win_ratio: 0.32,
+    families: [
+      { id: "comarques", n: 6 },
+      { id: "simbols", n: 6 },
+      { id: "capitals", n: 6 },
+      { id: "festes", n: 5 },
+      { id: "rius", n: 6 },
+      { id: "muntanyes", n: 6 },
+      { id: "pobles", n: 6 },
+      { id: "residencies", n: 5 }
+    ],
+    columnes: [4, 5, 6, 7, 8]
+  },
+  {
+    nom: "Ciència dura",
+    moviments: 106,
+    espais: 4,
+    win_ratio: 0.38,
+    families: [
+      { id: "elements", n: 6 },
+      { id: "planetes", n: 6 },
+      { id: "unitats", n: 6 },
+      { id: "cos", n: 5 },
+      { id: "ossos", n: 5 },
+      { id: "musculs", n: 5 },
+      { id: "minerals", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7, 8]
+  },
+  {
+    nom: "Matemàtiques expert",
+    moviments: 106,
+    espais: 4,
+    win_ratio: 0.3,
+    families: [
+      { id: "branques", n: 7 },
+      { id: "operacions", n: 7 },
+      { id: "objectes_mates", n: 7 },
+      { id: "matematics", n: 7 },
+      { id: "unitats", n: 6 },
+      { id: "especies", n: 5 }
+    ],
+    columnes: [3, 4, 5, 6, 7, 8]
+  },
+  {
+    // últims 5 < 20%
+    nom: "La lliga total",
+    moviments: 148,
+    espais: 5,
+    win_ratio: 0.19,
+    families: [
+      { id: "nba", n: 8 },
+      { id: "esports", n: 6 },
+      { id: "escacs", n: 6 },
+      { id: "musculs", n: 5 },
+      { id: "cos", n: 5 },
+      { id: "marc_granado", n: 6 },
+      { id: "colors", n: 5 },
+      { id: "aina", n: 5 },
+      { id: "ossos", n: 4 },
+      { id: "ma", n: 4 },
+      { id: "capitals", n: 5 }
+    ],
+    columnes: [4, 5, 6, 7, 8, 9]
+  },
+  {
+    nom: "Geografia infernal",
+    moviments: 126,
+    espais: 4,
+    win_ratio: 0.16,
+    families: [
+      { id: "rius", n: 7 },
+      { id: "muntanyes", n: 7 },
+      { id: "mars", n: 7 },
+      { id: "llacs", n: 7 },
+      { id: "comarques", n: 6 },
+      { id: "capitals", n: 6 },
+      { id: "paisos", n: 6 },
+      { id: "pobles", n: 6 }
+    ],
+    columnes: [4, 5, 6, 7, 8, 9]
+  },
+  {
+    nom: "Tots els amics II",
+    moviments: 174,
+    espais: 6,
+    win_ratio: 0.18,
+    families: [
+      { id: "pau_mas", n: 6 },
+      { id: "marc_granado", n: 8 },
+      { id: "mariona", n: 6 },
+      { id: "lupe", n: 5 },
+      { id: "aina", n: 6 },
+      { id: "pere", n: 6 },
+      { id: "pol", n: 6 },
+      { id: "joana", n: 5 },
+      { id: "rosa", n: 6 },
+      { id: "gina", n: 5 },
+      { id: "marquina", n: 6 },
+      { id: "carbo", n: 6 }
+    ],
+    columnes: [5, 6, 7, 8, 9, 9]
+  },
+  {
+    nom: "Paraulada final",
+    moviments: 168,
+    espais: 6,
+    win_ratio: 0.14,
+    families: [
+      { id: "diacritics", n: 8 },
+      { id: "capitals", n: 6 },
+      { id: "instruments", n: 6 },
+      { id: "arbres", n: 6 },
+      { id: "temps", n: 6 },
+      { id: "senyals", n: 6 },
+      { id: "ossos", n: 5 },
+      { id: "ma", n: 5 },
+      { id: "colors", n: 5 },
+      { id: "cuina", n: 6 },
+      { id: "esports", n: 5 },
+      { id: "vehicles", n: 4 }
+    ],
+    columnes: [5, 6, 7, 8, 9, 9]
+  },
+  {
+    // boss final
+    nom: "L'infern de les ovelles",
+    moviments: 166,
+    espais: 6,
+    win_ratio: 0.08,
     families: [
       { id: "cos", n: 6 },
       { id: "ossos", n: 6 },
@@ -530,6 +944,6 @@ const LEVELS = [
       { id: "joies", n: 3 },
       { id: "mobles", n: 4 }
     ],
-    columnes: [4, 5, 6, 7, 8, 9]
+    columnes: [5, 6, 7, 8, 9, 9]
   }
 ];

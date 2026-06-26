@@ -436,41 +436,65 @@ function adminActiu() {
   return localStorage.getItem(clau("admin")) === "1";
 }
 
-// a quin dels 3 blocs pertany un nivell, segons la seva posició
-function blocDelNivell(i, total) {
-  if (typeof BLOCS === "undefined" || !BLOCS.length) return null;
-  const primers = BLOCS[0].primers || 0;
-  const ultims = BLOCS[BLOCS.length - 1].ultims || 0;
-  if (i < primers) return BLOCS[0];
-  if (i >= total - ultims) return BLOCS[BLOCS.length - 1];
-  return BLOCS[1];
+// rangs dels blocs (índexs 0-based, end exclusiu) a partir de la mida
+function rangsBlocs() {
+  let acc = 0;
+  return (typeof BLOCS !== "undefined" ? BLOCS : []).map((b) => {
+    const start = acc; acc += b.mida || 0;
+    return { ...b, start, end: acc };
+  });
 }
 
+// null = pantalla dels 3 botons de bloc; nombre = índex del bloc obert
+let blocSeleccionat = null;
+
 function pintaGraellaNivells() {
+  const menu = $("#menu-blocs");
   const graella = $("#graella-nivells");
-  graella.innerHTML = "";
+  const btnTornar = $("#btn-tornar-blocs");
   const superats = nivellsSuperats();
   const admin = adminActiu();
-  let blocActual = null;
-  LEVELS.forEach((niv, i) => {
-    // capçalera de bloc (Tutorial / Normal / Repte final)
-    const bloc = blocDelNivell(i, LEVELS.length);
-    if (bloc && bloc !== blocActual) {
-      blocActual = bloc;
-      const titol = document.createElement("div");
-      titol.className = "bloc-titol";
-      titol.innerHTML = `${bloc.emoji} ${bloc.nom}`;
-      graella.appendChild(titol);
+  const blocs = rangsBlocs();
+  menu.innerHTML = "";
+  graella.innerHTML = "";
+
+  if (blocSeleccionat === null) {
+    // ----- pantalla dels 3 botons de bloc -----
+    menu.classList.remove("amagada");
+    graella.classList.add("amagada");
+    btnTornar.classList.add("amagada");
+    blocs.forEach((b, bi) => {
+      const fets = Math.max(0, Math.min(superats, b.end) - b.start);
+      const obert = admin || superats >= b.start;
+      const btn = document.createElement("button");
+      btn.className = "btn-bloc";
+      if (!obert) btn.classList.add("bloquejat");
+      if (fets >= b.mida) btn.classList.add("complet");
+      btn.innerHTML = obert
+        ? `<span class="bloc-emoji">${b.emoji}</span><span class="bloc-nom">${b.nom}</span><span class="bloc-prog">${fets}/${b.mida} ⭐</span>`
+        : `<span class="bloc-emoji">🔒</span><span class="bloc-nom">${b.nom}</span><span class="bloc-prog">Acaba el bloc anterior</span>`;
+      if (obert) btn.onclick = () => { blocSeleccionat = bi; pintaGraellaNivells(); };
+      menu.appendChild(btn);
+    });
+  } else {
+    // ----- graella de nivells del bloc seleccionat -----
+    menu.classList.add("amagada");
+    graella.classList.remove("amagada");
+    btnTornar.classList.remove("amagada");
+    const b = blocs[blocSeleccionat];
+    btnTornar.innerHTML = `← ${b.emoji} ${b.nom}`;
+    for (let i = b.start; i < b.end && i < LEVELS.length; i++) {
+      const obert = admin || i <= superats;
+      const cell = document.createElement("button");
+      cell.className = "btn-nivell";
+      if (i < superats) cell.classList.add("superat");
+      if (!obert) cell.classList.add("bloquejat");
+      cell.innerHTML = !obert ? "🔒" : `${i + 1}<small>${i < superats ? "⭐" : ""}</small>`;
+      if (obert) cell.onclick = () => nouNivell(i);
+      graella.appendChild(cell);
     }
-    const b = document.createElement("button");
-    b.className = "btn-nivell";
-    const obert = admin || i <= superats;
-    if (i < superats) b.classList.add("superat");
-    if (!obert) b.classList.add("bloquejat");
-    b.innerHTML = !obert ? "🔒" : `${i + 1}<small>${i < superats ? "⭐" : ""}</small>`;
-    if (obert) b.onclick = () => nouNivell(i);
-    graella.appendChild(b);
-  });
+  }
+
   $("#btn-admin").textContent = admin
     ? `🔧 Mode admin: ACTIVAT · ${VERSIO_JOC} · edició ${EDICIO_ID}`
     : "🔧 Mode admin";
@@ -759,6 +783,7 @@ $("#pila-robar").addEventListener("click", accioRoba);
 $("#btn-desfer").addEventListener("click", desfer);
 $("#btn-reiniciar").addEventListener("click", () => nouNivell(estat.nivellIdx));
 $("#btn-inici").addEventListener("click", vesAInici);
+$("#btn-tornar-blocs").addEventListener("click", () => { blocSeleccionat = null; pintaGraellaNivells(); });
 $("#btn-admin").addEventListener("click", () => {
   if (adminActiu()) {
     localStorage.setItem(clau("admin"), "0"); // desactivar no demana contrasenya
