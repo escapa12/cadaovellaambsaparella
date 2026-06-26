@@ -704,6 +704,17 @@ function renderitza() {
   cm.classList.toggle("alerta", estat.moviments <= 5);
   const cw = $("#comodins-compte");
   if (cw) cw.textContent = estat.comodins;
+  // termòmetre de risc: cost del pròxim error de família
+  const fill = $("#mw-fill");
+  if (fill) {
+    const errs = estat.errors || 0;
+    const cost = Math.min(5, 1 + Math.floor(errs / 3)); // cost del pròxim error
+    const colors = ["#2eb360", "#ffd34d", "#ff9f1c", "#ff5246", "#8b1a1a"];
+    fill.style.height = Math.max(12, Math.min(100, Math.round((errs / 12) * 100))) + "%";
+    fill.style.background = colors[cost - 1];
+    $("#mw-label").textContent = "−" + cost;
+    $("#multa-widget").classList.toggle("max", cost >= 5);
+  }
   $("#btn-desfer").disabled = !estat.historial.length;
 
   pintaFundacions();
@@ -1000,6 +1011,10 @@ $("#btn-desfer").addEventListener("click", desfer);
 $("#btn-reiniciar").addEventListener("click", () => nouNivell(estat.nivellIdx));
 $("#btn-inici").addEventListener("click", vesAInici);
 $("#btn-tornar-blocs").addEventListener("click", () => { blocSeleccionat = null; pintaGraellaNivells(); });
+$("#multa-widget").addEventListener("click", () => {
+  const cost = estat ? Math.min(5, 1 + Math.floor((estat.errors || 0) / 3)) : 1;
+  missatge(`⚠️ Cada error de família resta moviments i va pujant cada 3 errors, fins a −5 com a màxim. Ara el pròxim error et costaria −${cost}.`, 5000);
+});
 $("#btn-comodins-info").addEventListener("click", () => {
   const queden = estat ? ` Te'n queden ${estat.comodins}.` : "";
   missatge("🔍 Comodí: mantén premuda una carta (click & hold) i et dirà la seva definició, per ajudar-te a endevinar la família. Cada consulta gasta un comodí." + queden, 5500);

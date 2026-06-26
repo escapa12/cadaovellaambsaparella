@@ -465,6 +465,45 @@ html, body {
   display: inline-block;
 }
 
+/* ===== TERMÒMETRE DE RISC (a baix a l'esquerra) ===== */
+#multa-widget {
+  position: absolute;
+  left: 12px;
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  z-index: 40;
+  cursor: pointer;
+}
+#multa-widget .mw-term {
+  width: 14px;
+  height: 58px;
+  border-radius: 8px;
+  background: rgba(0,0,0,.28);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+#mw-fill {
+  display: block;
+  width: 100%;
+  height: 12%;
+  background: #2eb360;
+  border-radius: 8px;
+  transition: height .3s ease, background .3s ease;
+}
+#multa-widget .mw-label {
+  background: rgba(0,0,0,.28);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 4px 9px;
+  border-radius: 12px;
+}
+#multa-widget.max #mw-fill { animation: polsMulta 1s ease-in-out infinite; }
+@keyframes polsMulta { 50% { opacity: .55; } }
+
 /* ===== WIDGET DE COMODINS (a baix a la dreta) ===== */
 #comodins-widget {
   position: absolute;
