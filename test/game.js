@@ -1016,9 +1016,9 @@ $("#btn-desfer").addEventListener("click", desfer);
 $("#btn-reiniciar").addEventListener("click", () => nouNivell(estat.nivellIdx));
 $("#btn-inici").addEventListener("click", vesAInici);
 $("#btn-tornar-blocs").addEventListener("click", () => { blocSeleccionat = null; pintaGraellaNivells(); });
-$("#multa-widget").addEventListener("click", () => {
+$("#btn-multa-info").addEventListener("click", () => {
   const cost = estat ? Math.min(5, 1 + Math.floor((estat.errors || 0) / 3)) : 1;
-  missatge(`⚠️ Cada error de família resta moviments i va pujant cada 3 errors, fins a −5 com a màxim. Ara el pròxim error et costaria −${cost}.`, 5000);
+  missatge(`⚠️ Cada error de família resta moviments. Els 3 punts s'omplen amb cada error; quan s'omplen, la multa puja (−1 → −2 → −3 → fins a −5) i canvien de color. Ara el pròxim error et costaria −${cost}.`, 5500);
 });
 $("#btn-comodins-info").addEventListener("click", () => {
   const queden = estat ? ` Te'n queden ${estat.comodins}.` : "";

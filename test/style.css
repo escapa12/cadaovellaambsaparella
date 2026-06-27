@@ -471,17 +471,23 @@ html, body {
   left: 12px;
   bottom: calc(14px + env(safe-area-inset-bottom));
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 8px;
   z-index: 40;
-  cursor: pointer;
+}
+/* un sol "bloc negre": flama+número a dalt, tres punts a sota */
+#multa-widget .mw-block {
+  background: rgba(0,0,0,.28);
+  border-radius: 16px;
+  padding: 7px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
 }
 #mw-punts {
   display: flex;
   gap: 5px;
-  background: rgba(0,0,0,.28);
-  padding: 6px 8px;
-  border-radius: 12px;
 }
 #mw-punts i {
   width: 11px;
@@ -491,16 +497,26 @@ html, body {
   transition: background .25s ease;
 }
 #multa-widget .mw-label {
-  background: rgba(0,0,0,.28);
   color: #fff;
   font-size: 15px;
   font-weight: 800;
-  padding: 4px 9px;
-  border-radius: 12px;
   display: inline-flex;
   align-items: center;
   gap: 3px;
 }
+#btn-multa-info {
+  width: 28px; height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0,0,0,.28);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  font-style: italic;
+  font-family: Georgia, "Times New Roman", serif;
+  cursor: pointer;
+}
+#btn-multa-info:active { background: rgba(0,0,0,.45); }
 #multa-widget .mw-flama {
   display: inline-block;
   line-height: 1;
