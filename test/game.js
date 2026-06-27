@@ -169,7 +169,11 @@ function intentsBloc(id) {
 
 // ---------- mode infinit: nivell aleatori, sempre dificultat experta ----------
 function generaNivellRandom() {
-  const nFam = 6 + Math.floor(Math.random() * 3); // 6-8 famílies (menys confusió → dificultat ~0.45)
+  // Disseny del mode infinit: MOLTS espais (6) i columnes curtes perquè
+  // quedar encallat per mala sort (cartes amagades) sigui raríssim, però
+  // marge de moviments MOLT JUST (factor 1.55) perquè cada error de
+  // família es pagui caríssim. Moltes famílies (8-9) = molta confusió.
+  const nFam = 8 + Math.floor(Math.random() * 2); // 8-9 famílies
   const triades = [];
   const usades = new Set();
   for (const id of barreja(Object.keys(FAMILIES))) {
@@ -185,11 +189,11 @@ function generaNivellRandom() {
   const cartes = triades.reduce((s, f) => s + f.n, 0) + F;
   return {
     nom: "Nivell infinit",
-    moviments: Math.round((cartes * 2.4) / 2) * 2, // marge més folgat (dificultat ~0.45)
-    espais: F >= 8 ? 5 : 4,
+    moviments: Math.round((cartes * 1.55) / 2) * 2, // marge molt just: els errors maten
+    espais: 6,                                       // molts espais: rarament t'encalles per sort
     win_ratio: 0.45,
     families: triades,
-    columnes: F >= 8 ? [4, 5, 6, 7, 8] : [3, 4, 5, 6, 7]
+    columnes: [3, 4, 4, 5, 5, 6, 6]                  // moltes columnes curtes: menys cartes amagades
   };
 }
 
