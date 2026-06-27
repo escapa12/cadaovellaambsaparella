@@ -115,7 +115,7 @@ const LEVELS = [
   // ========================================================
   {
     nom: "Geografia: primer viatge",
-    moviments: 90,
+    moviments: 108,
     espais: 4,
     win_ratio: 0.72,
     families: [
@@ -123,13 +123,14 @@ const LEVELS = [
       { id: "muntanyes_facils", n: 5 },
       { id: "mars_facils", n: 5 },
       { id: "llacs_facils", n: 4 },
-      { id: "paisos", n: 5 }
+      { id: "paisos", n: 5 },
+      { id: "gina", n: 5 }
     ],
     columnes: [2, 3, 4, 5, 6]
   },
   {
     nom: "Set famílies (i mitja)",
-    moviments: 162,
+    moviments: 182,
     espais: 4,
     win_ratio: 0.6,
     families: [
@@ -141,13 +142,14 @@ const LEVELS = [
       { id: "joies", n: 4 },
       { id: "colors", n: 5 },
       { id: "nba", n: 5 },
-      { id: "cuina", n: 4 }
+      { id: "cuina", n: 4 },
+      { id: "pere", n: 6 }
     ],
     columnes: [3, 4, 5, 5, 6, 6]
   },
   {
     nom: "Cultura general",
-    moviments: 94,
+    moviments: 112,
     espais: 4,
     win_ratio: 0.7,
     families: [
@@ -155,7 +157,8 @@ const LEVELS = [
       { id: "escriptors_facils", n: 5 },
       { id: "actors_facils", n: 5 },
       { id: "cientifics_facils", n: 5 },
-      { id: "instruments", n: 5 }
+      { id: "instruments", n: 5 },
+      { id: "ivet", n: 5 }
     ],
     columnes: [2, 3, 4, 5, 6]
   },
@@ -177,7 +180,7 @@ const LEVELS = [
   },
   {
     nom: "Cafès i tiberi",
-    moviments: 92,
+    moviments: 114,
     espais: 4,
     win_ratio: 0.68,
     families: [
@@ -185,13 +188,14 @@ const LEVELS = [
       { id: "pizzes", n: 6 },
       { id: "pastes", n: 5 },
       { id: "begudes", n: 5 },
-      { id: "postres", n: 5 }
+      { id: "postres", n: 5 },
+      { id: "carbo", n: 6 }
     ],
     columnes: [2, 3, 4, 5, 6]
   },
   {
     nom: "El tiberi",
-    moviments: 92,
+    moviments: 110,
     espais: 4,
     win_ratio: 0.58,
     families: [
@@ -199,13 +203,14 @@ const LEVELS = [
       { id: "pastes", n: 6 },
       { id: "formatges", n: 6 },
       { id: "embotits", n: 6 },
-      { id: "salses", n: 5 }
+      { id: "salses", n: 5 },
+      { id: "montcada", n: 6 }
     ],
     columnes: [2, 3, 4, 5, 6]
   },
   {
     nom: "Festa major",
-    moviments: 90,
+    moviments: 130,
     espais: 4,
     win_ratio: 0.66,
     families: [
@@ -213,7 +218,9 @@ const LEVELS = [
       { id: "festes", n: 5 },
       { id: "instruments", n: 5 },
       { id: "begudes", n: 5 },
-      { id: "roba", n: 5 }
+      { id: "roba", n: 5 },
+      { id: "pau_mas", n: 6 },
+      { id: "pol", n: 6 }
     ],
     columnes: [2, 3, 4, 5, 6]
   },
@@ -236,7 +243,7 @@ const LEVELS = [
   },
   {
     nom: "Bosc i camp",
-    moviments: 90,
+    moviments: 110,
     espais: 4,
     win_ratio: 0.68,
     families: [
@@ -244,7 +251,8 @@ const LEVELS = [
       { id: "arbres", n: 5 },
       { id: "flors", n: 5 },
       { id: "aus", n: 5 },
-      { id: "herbes", n: 5 }
+      { id: "herbes", n: 5 },
+      { id: "buxo", n: 6 }
     ],
     columnes: [2, 3, 4, 5, 6]
   },
@@ -267,7 +275,7 @@ const LEVELS = [
   },
   {
     nom: "Mercat i monedes",
-    moviments: 90,
+    moviments: 110,
     espais: 4,
     win_ratio: 0.64,
     families: [
@@ -275,13 +283,14 @@ const LEVELS = [
       { id: "oficis", n: 5 },
       { id: "eines", n: 5 },
       { id: "teixits", n: 5 },
-      { id: "especies", n: 5 }
+      { id: "especies", n: 5 },
+      { id: "rosa", n: 6 }
     ],
     columnes: [2, 3, 4, 5, 6]
   },
   {
     nom: "El gran batibull",
-    moviments: 164,
+    moviments: 180,
     espais: 5,
     win_ratio: 0.56,
     families: [
@@ -294,7 +303,8 @@ const LEVELS = [
       { id: "escacs", n: 5 },
       { id: "joies", n: 4 },
       { id: "senyals", n: 5 },
-      { id: "arbres", n: 4 }
+      { id: "arbres", n: 4 },
+      { id: "lupe", n: 5 }
     ],
     columnes: [3, 4, 5, 6, 7, 8]
   },
@@ -314,7 +324,7 @@ const LEVELS = [
   },
   {
     nom: "Escapada de cap de setmana",
-    moviments: 156,
+    moviments: 176,
     espais: 5,
     win_ratio: 0.54,
     families: [
@@ -327,7 +337,8 @@ const LEVELS = [
       { id: "festes", n: 5 },
       { id: "roba", n: 4 },
       { id: "cuina", n: 3 },
-      { id: "instruments", n: 4 }
+      { id: "instruments", n: 4 },
+      { id: "mariona", n: 6 }
     ],
     columnes: [3, 4, 5, 6, 7, 8]
   },
@@ -348,14 +359,15 @@ const LEVELS = [
   },
   {
     nom: "Cel nocturn",
-    moviments: 72,
+    moviments: 92,
     espais: 4,
     win_ratio: 0.56,
     families: [
       { id: "constel", n: 6 },
       { id: "nuvols", n: 6 },
       { id: "planetes", n: 6 },
-      { id: "temps", n: 5 }
+      { id: "temps", n: 5 },
+      { id: "marquina", n: 6 }
     ],
     columnes: [3, 4, 5, 6]
   },
@@ -411,7 +423,7 @@ const LEVELS = [
   },
   {
     nom: "Llegendes",
-    moviments: 86,
+    moviments: 102,
     espais: 4,
     win_ratio: 0.56,
     families: [
@@ -419,7 +431,8 @@ const LEVELS = [
       { id: "criatures", n: 6 },
       { id: "escacs", n: 5 },
       { id: "joies", n: 5 },
-      { id: "paisos", n: 5 }
+      { id: "paisos", n: 5 },
+      { id: "joana", n: 5 }
     ],
     columnes: [2, 3, 4, 5, 6]
   },
@@ -479,9 +492,9 @@ const LEVELS = [
       { id: "escacs", n: 6 },
       { id: "musculs", n: 5 },
       { id: "cos", n: 5 },
-      { id: "marc_granado", n: 6 },
+      { id: "clubs", n: 6 },
       { id: "colors", n: 5 },
-      { id: "aina", n: 5 },
+      { id: "olimpiades", n: 5 },
       { id: "ossos", n: 4 },
       { id: "ma", n: 4 }
     ],
@@ -663,21 +676,21 @@ const LEVELS = [
     columnes: [3, 4, 5, 6, 7, 8]
   },
   {
-    nom: "La colla difícil",
-    moviments: 158,
+    nom: "El poti-poti",
+    moviments: 156,
     espais: 5,
     win_ratio: 0.36,
     families: [
-      { id: "marquina", n: 6 },
-      { id: "carbo", n: 6 },
-      { id: "montcada", n: 6 },
-      { id: "buxo", n: 6 },
-      { id: "ivet", n: 6 },
-      { id: "pere", n: 6 },
-      { id: "pol", n: 6 },
-      { id: "capitals", n: 5 },
-      { id: "nba", n: 5 },
-      { id: "escacs", n: 5 }
+      { id: "capitals", n: 6 },
+      { id: "nba", n: 6 },
+      { id: "escacs", n: 6 },
+      { id: "joies", n: 6 },
+      { id: "instruments", n: 6 },
+      { id: "vehicles", n: 6 },
+      { id: "colors", n: 5 },
+      { id: "senyals", n: 5 },
+      { id: "mobles", n: 5 },
+      { id: "temps", n: 5 }
     ],
     columnes: [4, 5, 6, 7, 8, 9]
   },
@@ -856,9 +869,9 @@ const LEVELS = [
       { id: "escacs", n: 6 },
       { id: "musculs", n: 5 },
       { id: "cos", n: 5 },
-      { id: "marc_granado", n: 6 },
+      { id: "clubs", n: 6 },
       { id: "colors", n: 5 },
-      { id: "aina", n: 5 },
+      { id: "olimpiades", n: 5 },
       { id: "ossos", n: 4 },
       { id: "ma", n: 4 },
       { id: "capitals", n: 5 }
@@ -883,23 +896,23 @@ const LEVELS = [
     columnes: [4, 5, 6, 7, 8, 9]
   },
   {
-    nom: "Tots els amics II",
-    moviments: 174,
+    nom: "L'enciclopèdia",
+    moviments: 184,
     espais: 6,
     win_ratio: 0.18,
     families: [
-      { id: "pau_mas", n: 6 },
-      { id: "marc_granado", n: 8 },
-      { id: "mariona", n: 6 },
-      { id: "lupe", n: 5 },
-      { id: "aina", n: 6 },
-      { id: "pere", n: 6 },
-      { id: "pol", n: 6 },
-      { id: "joana", n: 5 },
-      { id: "rosa", n: 6 },
-      { id: "gina", n: 5 },
-      { id: "marquina", n: 6 },
-      { id: "carbo", n: 6 }
+      { id: "musics", n: 7 },
+      { id: "escriptors", n: 7 },
+      { id: "actors", n: 7 },
+      { id: "cientifics", n: 7 },
+      { id: "rius", n: 6 },
+      { id: "muntanyes", n: 6 },
+      { id: "mars", n: 6 },
+      { id: "llacs", n: 6 },
+      { id: "comarques", n: 6 },
+      { id: "capitals", n: 6 },
+      { id: "paisos", n: 6 },
+      { id: "monedes", n: 6 }
     ],
     columnes: [5, 6, 7, 8, 9, 9]
   },

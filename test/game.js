@@ -712,7 +712,8 @@ function renderitza() {
     const colors = ["#2eb360", "#ffd34d", "#ff9f1c", "#ff5246", "#8b1a1a"];
     fill.style.height = Math.max(12, Math.min(100, Math.round((errs / 12) * 100))) + "%";
     fill.style.background = colors[cost - 1];
-    $("#mw-label").textContent = "−" + cost;
+    // flama que creix sobre el número segons el cost del pròxim error
+    $("#mw-label").innerHTML = `<span class="mw-flama" style="font-size:${10 + cost * 3}px">🔥</span>−${cost}`;
     $("#multa-widget").classList.toggle("max", cost >= 5);
   }
   $("#btn-desfer").disabled = !estat.historial.length;

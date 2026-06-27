@@ -500,7 +500,17 @@ html, body {
   font-weight: 800;
   padding: 4px 9px;
   border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
+#multa-widget .mw-flama {
+  display: inline-block;
+  line-height: 1;
+  transition: font-size .3s ease;
+  filter: drop-shadow(0 0 4px rgba(255,90,0,.5));
+}
+#multa-widget.max .mw-flama { animation: polsMulta 1s ease-in-out infinite; }
 #multa-widget.max #mw-fill { animation: polsMulta 1s ease-in-out infinite; }
 @keyframes polsMulta { 50% { opacity: .55; } }
 
