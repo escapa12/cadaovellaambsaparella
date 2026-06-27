@@ -608,15 +608,17 @@ function pintaGraellaNivells() {
     graella.classList.add("amagada");
     btnTornar.classList.add("amagada");
 
-    // HERO "Continua": salta directament al següent nivell pendent
+    // HERO: "Comença" la primera vegada (cap nivell completat), "Continua" després
     const seg = nivellContinua();
     if (seg !== null) {
+      const totalFets = blocs.reduce((s, b) => s + progresBloc(b.id), 0);
+      const primera = totalFets === 0;
       const bSeg = blocs.find((b) => seg >= b.start && seg < b.end);
       const hero = document.createElement("button");
       hero.className = "btn-continua";
       hero.innerHTML =
-        `<span class="cont-titol">▶ Continua</span>` +
-        `<span class="cont-sub">Nivell ${seg + 1}${bSeg && bSeg.id === "dificil" ? " · " + bSeg.nom : ""}</span>`;
+        `<span class="cont-titol">▶ ${primera ? "Comença" : "Continua"}</span>` +
+        `<span class="cont-sub">${primera ? "Nivell 1 · a jugar!" : "Nivell " + (seg + 1) + (bSeg && bSeg.id === "dificil" ? " · " + bSeg.nom : "")}</span>`;
       hero.onclick = () => nouNivell(seg);
       menu.appendChild(hero);
     }
