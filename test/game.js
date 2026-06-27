@@ -571,6 +571,7 @@ function nivellContinua() {
 }
 
 function vesAInici() {
+  if (recarregaPendent) { location.reload(); return; } // aplica la versió nova en sortir de la partida
   $("#modal").classList.add("amagada");
   $("#pantalla-joc").classList.add("amagada");
   $("#pantalla-inici").classList.remove("amagada");
@@ -592,6 +593,9 @@ function rangsBlocs() {
 
 // null = pantalla dels 3 botons de bloc; nombre = índex del bloc obert
 let blocSeleccionat = null;
+// es posa a true quan hi ha una versió nova llesta mentre s'està jugant;
+// la recàrrega es fa quan el jugador torna a l'inici (per no tallar la partida)
+let recarregaPendent = false;
 
 function pintaGraellaNivells() {
   const menu = $("#menu-blocs");
@@ -1087,9 +1091,20 @@ window.addEventListener("resize", () => { if (estat) { calculaMides(); renderitz
   if (errors.length) {
     alert("⚠️ Hi ha errors a la configuració:\n\n" + errors.join("\n"));
   }
-  // service worker per poder instal·lar-lo al mòbil (només funciona amb https)
+  // service worker + actualització automàtica (només funciona amb https)
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-    navigator.serviceWorker.register(RUTA_ARREL + "sw.js").catch(() => {});
+    navigator.serviceWorker.register(RUTA_ARREL + "sw.js").then((reg) => {
+      reg.update();
+      setInterval(() => reg.update(), 60 * 60 * 1000); // busca versió nova cada hora
+    }).catch(() => {});
+    // quan el service worker nou pren el control, recarrega per estrenar la versió
+    // (si s'està jugant, espera a tornar a l'inici). Només si ja n'hi havia un.
+    if (navigator.serviceWorker.controller) {
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (estat && !estat.acabat) recarregaPendent = true;
+        else location.reload();
+      });
+    }
   }
   // ?nivell=3 per anar directe a un nivell (útil per provar)
   const param = new URLSearchParams(location.search).get("nivell");
