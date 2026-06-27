@@ -37,7 +37,7 @@ const LEVELS = [
   // ========================================================
   {
     nom: "Primeres passes",
-    moviments: 58,
+    moviments: 48,
     espais: 2,
     win_ratio: 0.95,
     families: [
@@ -50,7 +50,7 @@ const LEVELS = [
   },
   {
     nom: "Senyals al camí",
-    moviments: 72,
+    moviments: 56,
     espais: 2,
     win_ratio: 0.9,
     families: [
@@ -64,7 +64,7 @@ const LEVELS = [
   },
   {
     nom: "Amb el Pau",
-    moviments: 84,
+    moviments: 64,
     espais: 2,
     win_ratio: 0.93,
     families: [
@@ -78,7 +78,7 @@ const LEVELS = [
   },
   {
     nom: "Amb la Lupe",
-    moviments: 100,
+    moviments: 72,
     espais: 3,
     win_ratio: 0.88,
     families: [
@@ -94,7 +94,7 @@ const LEVELS = [
   {
     // boss del tutorial
     nom: "La volta al món",
-    moviments: 138,
+    moviments: 92,
     espais: 4,
     win_ratio: 0.72,
     families: [
@@ -115,7 +115,7 @@ const LEVELS = [
   // ========================================================
   {
     nom: "Geografia: primer viatge",
-    moviments: 74,
+    moviments: 64,
     espais: 4,
     win_ratio: 0.72,
     families: [
@@ -130,7 +130,7 @@ const LEVELS = [
   },
   {
     nom: "Set famílies (i mitja)",
-    moviments: 142,
+    moviments: 112,
     espais: 4,
     win_ratio: 0.6,
     families: [
@@ -149,7 +149,7 @@ const LEVELS = [
   },
   {
     nom: "Cultura general",
-    moviments: 76,
+    moviments: 66,
     espais: 4,
     win_ratio: 0.7,
     families: [
@@ -164,7 +164,7 @@ const LEVELS = [
   },
   {
     nom: "El Marc i l'Aina",
-    moviments: 96,
+    moviments: 78,
     espais: 4,
     win_ratio: 0.62,
     families: [
@@ -180,7 +180,7 @@ const LEVELS = [
   },
   {
     nom: "Cafès i tiberi",
-    moviments: 84,
+    moviments: 72,
     espais: 4,
     win_ratio: 0.68,
     families: [
@@ -195,7 +195,7 @@ const LEVELS = [
   },
   {
     nom: "El tiberi",
-    moviments: 90,
+    moviments: 74,
     espais: 4,
     win_ratio: 0.58,
     families: [
@@ -210,7 +210,7 @@ const LEVELS = [
   },
   {
     nom: "Festa major",
-    moviments: 102,
+    moviments: 84,
     espais: 4,
     win_ratio: 0.66,
     families: [
@@ -226,7 +226,7 @@ const LEVELS = [
   },
   {
     nom: "Cares noves",
-    moviments: 104,
+    moviments: 82,
     espais: 4,
     win_ratio: 0.56,
     families: [
@@ -243,7 +243,7 @@ const LEVELS = [
   },
   {
     nom: "Bosc i camp",
-    moviments: 82,
+    moviments: 70,
     espais: 4,
     win_ratio: 0.68,
     families: [
@@ -258,7 +258,7 @@ const LEVELS = [
   },
   {
     nom: "Anatomia",
-    moviments: 106,
+    moviments: 84,
     espais: 4,
     win_ratio: 0.54,
     families: [
@@ -275,7 +275,7 @@ const LEVELS = [
   },
   {
     nom: "Mercat i monedes",
-    moviments: 82,
+    moviments: 68,
     espais: 4,
     win_ratio: 0.64,
     families: [
@@ -290,7 +290,7 @@ const LEVELS = [
   },
   {
     nom: "El gran batibull",
-    moviments: 148,
+    moviments: 114,
     espais: 5,
     win_ratio: 0.56,
     families: [
@@ -310,7 +310,7 @@ const LEVELS = [
   },
   {
     nom: "Mar i costa",
-    moviments: 62,
+    moviments: 54,
     espais: 4,
     win_ratio: 0.66,
     families: [
@@ -324,7 +324,7 @@ const LEVELS = [
   },
   {
     nom: "Escapada de cap de setmana",
-    moviments: 144,
+    moviments: 110,
     espais: 5,
     win_ratio: 0.54,
     families: [
@@ -344,7 +344,7 @@ const LEVELS = [
   },
   {
     nom: "Pobles i ciutats",
-    moviments: 76,
+    moviments: 64,
     espais: 4,
     win_ratio: 0.62,
     families: [
@@ -359,7 +359,7 @@ const LEVELS = [
   },
   {
     nom: "Cel nocturn",
-    moviments: 72,
+    moviments: 60,
     espais: 4,
     win_ratio: 0.56,
     families: [
@@ -373,7 +373,7 @@ const LEVELS = [
   },
   {
     nom: "El rebost",
-    moviments: 128,
+    moviments: 102,
     espais: 5,
     win_ratio: 0.62,
     families: [
@@ -392,7 +392,7 @@ const LEVELS = [
   },
   {
     nom: "Tota la colla",
-    moviments: 112,
+    moviments: 88,
     espais: 4,
     win_ratio: 0.54,
     families: [
@@ -409,7 +409,7 @@ const LEVELS = [
   },
   {
     nom: "Matemàtiques",
-    moviments: 72,
+    moviments: 60,
     espais: 4,
     win_ratio: 0.6,
     families: [
@@ -423,7 +423,7 @@ const LEVELS = [
   },
   {
     nom: "Llegendes",
-    moviments: 82,
+    moviments: 68,
     espais: 4,
     win_ratio: 0.56,
     families: [
@@ -438,7 +438,7 @@ const LEVELS = [
   },
   {
     nom: "Edat mitjana",
-    moviments: 84,
+    moviments: 70,
     espais: 4,
     win_ratio: 0.58,
     families: [
@@ -453,7 +453,7 @@ const LEVELS = [
   },
   {
     nom: "Anatomia avançada",
-    moviments: 80,
+    moviments: 66,
     espais: 4,
     win_ratio: 0.52,
     families: [
@@ -468,7 +468,7 @@ const LEVELS = [
   },
   {
     nom: "Ciència i cosmos",
-    moviments: 78,
+    moviments: 64,
     espais: 4,
     win_ratio: 0.56,
     families: [
@@ -483,7 +483,7 @@ const LEVELS = [
   },
   {
     nom: "La lliga",
-    moviments: 130,
+    moviments: 102,
     espais: 5,
     win_ratio: 0.52,
     families: [
@@ -503,7 +503,7 @@ const LEVELS = [
   {
     // boss del bloc Normal
     nom: "Calaix de sastre",
-    moviments: 108,
+    moviments: 84,
     espais: 4,
     win_ratio: 0.4,
     families: [
@@ -524,7 +524,7 @@ const LEVELS = [
   // ========================================================
   {
     nom: "Geografia: repte mundial",
-    moviments: 120,
+    moviments: 86,
     espais: 4,
     win_ratio: 0.5,
     families: [
@@ -540,7 +540,7 @@ const LEVELS = [
   },
   {
     nom: "Paraulada",
-    moviments: 174,
+    moviments: 118,
     espais: 5,
     win_ratio: 0.4,
     families: [
@@ -560,7 +560,7 @@ const LEVELS = [
   },
   {
     nom: "Cultura: nivell expert",
-    moviments: 98,
+    moviments: 70,
     espais: 4,
     win_ratio: 0.48,
     families: [
@@ -574,7 +574,7 @@ const LEVELS = [
   },
   {
     nom: "Tots els amics",
-    moviments: 172,
+    moviments: 118,
     espais: 5,
     win_ratio: 0.38,
     families: [
@@ -594,7 +594,7 @@ const LEVELS = [
   },
   {
     nom: "Tresor i mercaderies",
-    moviments: 92,
+    moviments: 68,
     espais: 4,
     win_ratio: 0.46,
     families: [
@@ -609,7 +609,7 @@ const LEVELS = [
   },
   {
     nom: "Anatomia total",
-    moviments: 122,
+    moviments: 86,
     espais: 4,
     win_ratio: 0.36,
     families: [
@@ -626,7 +626,7 @@ const LEVELS = [
   },
   {
     nom: "Tempesta a alta mar",
-    moviments: 98,
+    moviments: 72,
     espais: 4,
     win_ratio: 0.46,
     families: [
@@ -641,7 +641,7 @@ const LEVELS = [
   },
   {
     nom: "El garbuix",
-    moviments: 160,
+    moviments: 110,
     espais: 5,
     win_ratio: 0.34,
     families: [
@@ -661,7 +661,7 @@ const LEVELS = [
   },
   {
     nom: "Natura amagada",
-    moviments: 100,
+    moviments: 72,
     espais: 4,
     win_ratio: 0.44,
     families: [
@@ -677,7 +677,7 @@ const LEVELS = [
   },
   {
     nom: "El poti-poti",
-    moviments: 152,
+    moviments: 104,
     espais: 5,
     win_ratio: 0.36,
     families: [
@@ -696,7 +696,7 @@ const LEVELS = [
   },
   {
     nom: "Cosmos profund",
-    moviments: 90,
+    moviments: 66,
     espais: 4,
     win_ratio: 0.44,
     families: [
@@ -711,7 +711,7 @@ const LEVELS = [
   },
   {
     nom: "Llegendes i mites",
-    moviments: 92,
+    moviments: 66,
     espais: 4,
     win_ratio: 0.34,
     families: [
@@ -726,7 +726,7 @@ const LEVELS = [
   },
   {
     nom: "Setge medieval",
-    moviments: 96,
+    moviments: 70,
     espais: 4,
     win_ratio: 0.44,
     families: [
@@ -741,7 +741,7 @@ const LEVELS = [
   },
   {
     nom: "Paraulada II",
-    moviments: 158,
+    moviments: 108,
     espais: 5,
     win_ratio: 0.32,
     families: [
@@ -761,7 +761,7 @@ const LEVELS = [
   },
   {
     nom: "Nit de gala",
-    moviments: 84,
+    moviments: 60,
     espais: 4,
     win_ratio: 0.42,
     families: [
@@ -776,7 +776,7 @@ const LEVELS = [
   },
   {
     nom: "El rebost ple",
-    moviments: 144,
+    moviments: 100,
     espais: 5,
     win_ratio: 0.34,
     families: [
@@ -795,7 +795,7 @@ const LEVELS = [
   },
   {
     nom: "Sobretaula",
-    moviments: 100,
+    moviments: 72,
     espais: 4,
     win_ratio: 0.42,
     families: [
@@ -811,7 +811,7 @@ const LEVELS = [
   },
   {
     nom: "Catalunya a fons",
-    moviments: 126,
+    moviments: 86,
     espais: 4,
     win_ratio: 0.32,
     families: [
@@ -828,7 +828,7 @@ const LEVELS = [
   },
   {
     nom: "Ciència dura",
-    moviments: 94,
+    moviments: 68,
     espais: 4,
     win_ratio: 0.38,
     families: [
@@ -844,7 +844,7 @@ const LEVELS = [
   },
   {
     nom: "Matemàtiques expert",
-    moviments: 94,
+    moviments: 66,
     espais: 4,
     win_ratio: 0.3,
     families: [
@@ -860,7 +860,7 @@ const LEVELS = [
   {
     // últims 5 < 20%
     nom: "La lliga total",
-    moviments: 148,
+    moviments: 110,
     espais: 5,
     win_ratio: 0.19,
     families: [
@@ -880,7 +880,7 @@ const LEVELS = [
   },
   {
     nom: "Geografia infernal",
-    moviments: 126,
+    moviments: 88,
     espais: 4,
     win_ratio: 0.16,
     families: [
@@ -897,7 +897,7 @@ const LEVELS = [
   },
   {
     nom: "L'enciclopèdia",
-    moviments: 184,
+    moviments: 142,
     espais: 6,
     win_ratio: 0.18,
     families: [
@@ -918,7 +918,7 @@ const LEVELS = [
   },
   {
     nom: "Paraulada final",
-    moviments: 168,
+    moviments: 124,
     espais: 6,
     win_ratio: 0.14,
     families: [
@@ -940,7 +940,7 @@ const LEVELS = [
   {
     // boss final
     nom: "L'infern de les ovelles",
-    moviments: 166,
+    moviments: 122,
     espais: 6,
     win_ratio: 0.08,
     families: [
