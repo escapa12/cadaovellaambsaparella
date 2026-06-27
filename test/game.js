@@ -704,15 +704,19 @@ function renderitza() {
   cm.classList.toggle("alerta", estat.moviments <= 5);
   const cw = $("#comodins-compte");
   if (cw) cw.textContent = estat.comodins;
-  // termòmetre de risc: cost del pròxim error de família
-  const fill = $("#mw-fill");
-  if (fill) {
+  // indicador de risc: 3 punts que s'omplen amb cada error; quan els 3
+  // són del mateix color, la multa puja i recomencen amb el color següent
+  // (groc → taronja → vermell → vermell fort), amb la flama i el −X.
+  const punts = document.querySelectorAll("#mw-punts i");
+  if (punts.length) {
     const errs = estat.errors || 0;
     const cost = Math.min(5, 1 + Math.floor(errs / 3)); // cost del pròxim error
-    const colors = ["#2eb360", "#ffd34d", "#ff9f1c", "#ff5246", "#8b1a1a"];
-    fill.style.height = Math.max(12, Math.min(100, Math.round((errs / 12) * 100))) + "%";
-    fill.style.background = colors[cost - 1];
-    // flama que creix sobre el número segons el cost del pròxim error
+    const colors = ["#ffd34d", "#ff9f1c", "#ff5246", "#a30f0f"]; // groc→taronja→vermell→vermell fort
+    let tier, plens;
+    if (cost >= 5) { tier = 3; plens = 3; }            // topall: 3 punts vermell fort
+    else if (errs === 0) { tier = 0; plens = 0; }
+    else { tier = Math.min(3, Math.floor((errs - 1) / 3)); plens = ((errs - 1) % 3) + 1; }
+    punts.forEach((d, k) => { d.style.background = k < plens ? colors[tier] : "rgba(255,255,255,.25)"; });
     $("#mw-label").innerHTML = `<span class="mw-flama" style="font-size:${10 + cost * 3}px">🔥</span>−${cost}`;
     $("#multa-widget").classList.toggle("max", cost >= 5);
   }
