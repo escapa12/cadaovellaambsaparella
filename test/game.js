@@ -169,27 +169,27 @@ function intentsBloc(id) {
 
 // ---------- mode infinit: nivell aleatori, sempre dificultat experta ----------
 function generaNivellRandom() {
-  const nFam = 8 + Math.floor(Math.random() * 4); // 8-11 famílies
+  const nFam = 6 + Math.floor(Math.random() * 3); // 6-8 famílies (menys confusió → dificultat ~0.45)
   const triades = [];
   const usades = new Set();
   for (const id of barreja(Object.keys(FAMILIES))) {
     if (triades.length >= nFam) break;
     const fam = FAMILIES[id];
-    if (fam.paraules.length < 4) continue;
+    if (fam.paraules.length < 5) continue;
     // evita col·lisions de paraules entre famílies del mateix nivell
     if (fam.paraules.some((p) => usades.has(p))) continue;
     fam.paraules.forEach((p) => usades.add(p));
-    triades.push({ id, n: Math.min(4 + Math.floor(Math.random() * 3), fam.paraules.length, 9) });
+    triades.push({ id, n: Math.min(5 + Math.floor(Math.random() * 2), fam.paraules.length, 9) });
   }
   const F = triades.length;
   const cartes = triades.reduce((s, f) => s + f.n, 0) + F;
   return {
     nom: "Nivell infinit",
-    moviments: Math.round((cartes * 2.2) / 2) * 2, // factor de wr 0.25
-    espais: F >= 10 ? 5 : 4,
-    win_ratio: 0.25,
+    moviments: Math.round((cartes * 2.4) / 2) * 2, // marge més folgat (dificultat ~0.45)
+    espais: F >= 8 ? 5 : 4,
+    win_ratio: 0.45,
     families: triades,
-    columnes: F >= 10 ? [4, 5, 6, 7, 8, 9] : [3, 4, 5, 6, 7, 8]
+    columnes: F >= 8 ? [4, 5, 6, 7, 8] : [3, 4, 5, 6, 7]
   };
 }
 
