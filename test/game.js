@@ -1070,6 +1070,13 @@ window.addEventListener("resize", () => { if (estat) { calculaMides(); renderitz
 
 // ---------- arrencada ----------
 (function arrenca() {
+  // REINICI ÚNIC en estrenar la versió nova (nou model de progrés per blocs):
+  // tothom comença de 0 i s'esborra el progrés antic perquè no quedi brossa.
+  if (!localStorage.getItem(clau("reset_v2"))) {
+    ["progres", "prog", "intents", "inf_ratxa", "inf_record"].forEach((k) => localStorage.removeItem(clau(k)));
+    localStorage.setItem(clau("reset_v2"), "1");
+  }
+
   const errors = validaConfiguracio();
   if (errors.length) {
     alert("⚠️ Hi ha errors a la configuració:\n\n" + errors.join("\n"));
