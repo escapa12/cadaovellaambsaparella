@@ -20,7 +20,9 @@
     </div>
     <p class="subtitol">Cada paraula amb la seva família!</p>
     <button id="btn-instruccions-inici" class="btn-pill">❓ Com s'hi juga</button>
-    <div id="graella-nivells"></div>
+    <div id="menu-blocs"></div>
+    <button id="btn-tornar-blocs" class="btn-text amagada">← Blocs</button>
+    <div id="graella-nivells" class="amagada"></div>
     <button id="btn-admin" class="btn-text">🔧 Mode admin</button>
     <button id="btn-esborrar-progres" class="btn-text">Esborrar progrés</button>
     <div class="marca-aigua">skapo productions</div>
@@ -49,6 +51,20 @@
     <div id="tauler"></div>
 
     <div id="missatge-flotant" class="amagada"></div>
+
+    <div id="multa-widget">
+      <div class="mw-block" title="Cost del pròxim error de família">
+        <span class="mw-label" id="mw-label"><span class="mw-flama">🔥</span>−1</span>
+        <span id="mw-punts"><i></i><i></i><i></i></span>
+      </div>
+      <button id="btn-multa-info" title="Com funciona la penalització?">i</button>
+    </div>
+
+    <div id="comodins-widget">
+      <button id="btn-comodins-info" title="Què són els comodins?">i</button>
+      <span class="cw-comptador">🔍 <b id="comodins-compte">0</b></span>
+    </div>
+
     <div class="marca-aigua marca-joc">skapo productions</div>
   </div>
 
@@ -117,8 +133,13 @@
       </section>
 
       <section class="instr">
+        <h3>🔍 Els comodins</h3>
+        <p>Si no saps de quina família és una carta, <b>mantén-la premuda</b> (click and hold) i et donarà la seva <b>definició</b>. Cada nivell en té uns quants 🔍; gasta'ls bé!</p>
+      </section>
+
+      <section class="instr">
         <h3>⚡ Els moviments</h3>
-        <p>Tot costa <b>1 moviment</b>: moure, robar i desfer ↩️. Cada error de família resta, i <b>cada 3 errors la multa puja</b>: −1, −1, −1, −2, −2, −2, −3... A 0, has perdut!</p>
+        <p>Tot costa <b>1 moviment</b>: moure, robar i desfer ↩️. Cada error de família resta, i <b>cada 3 errors la multa puja</b>: −1, −1, −1, −2, −2, −2... fins a un màxim de −5. A 0, has perdut!</p>
       </section>
 
       <section class="instr">
@@ -141,6 +162,7 @@
 
   <script src="families.js"></script>
   <script src="dibuixos.js"></script>
+  <script src="definicions.js"></script>
   <script src="levels.js"></script>
   <script src="game.js"></script>
 </body>

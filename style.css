@@ -65,18 +65,90 @@ html, body {
 
 #graella-nivells {
   display: grid;
-  grid-template-columns: repeat(4, 70px);
-  gap: 14px;
+  grid-template-columns: repeat(5, 56px);
+  gap: 10px;
   margin-bottom: 30px;
 }
 
-.btn-nivell {
-  width: 70px; height: 70px;
+/* ===== MENÚ DE BLOCS (3 botons: Tutorial / Normal / Difícil) ===== */
+#menu-blocs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(320px, 86vw);
+  margin-bottom: 24px;
+}
+/* hero "Continua" */
+.btn-continua {
   border: none;
-  border-radius: 16px;
+  border-radius: 18px;
+  background: var(--groc);
+  color: #6b4d00;
+  box-shadow: 0 5px 0 rgba(0,0,0,.28);
+  cursor: pointer;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.btn-continua:active { transform: translateY(2px); box-shadow: 0 3px 0 rgba(0,0,0,.28); }
+.btn-continua .cont-titol { font-size: 22px; font-weight: 800; }
+.btn-continua .cont-sub { font-size: 13px; font-weight: 700; opacity: .8; }
+
+/* targetes de bloc */
+.btn-bloc {
+  border: none;
+  border-radius: 18px;
   background: var(--crema);
   color: var(--verd-fosc);
-  font-size: 24px;
+  box-shadow: 0 5px 0 rgba(0,0,0,.25);
+  cursor: pointer;
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+}
+.btn-bloc:active { transform: translateY(2px); box-shadow: 0 3px 0 rgba(0,0,0,.25); }
+.btn-bloc .bloc-emoji { font-size: 30px; }
+.btn-bloc .bloc-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.btn-bloc .bloc-nom { font-size: 18px; font-weight: 800; }
+.btn-bloc .bloc-sub { font-size: 11.5px; font-weight: 600; opacity: .65; }
+.btn-bloc .bloc-barra {
+  height: 7px;
+  border-radius: 5px;
+  background: rgba(0,0,0,.12);
+  overflow: hidden;
+}
+.btn-bloc .bloc-barra > span {
+  display: block;
+  height: 100%;
+  background: #2eb360;
+  border-radius: 5px;
+}
+.btn-bloc .bloc-prog {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.btn-bloc .bloc-prog small { font-size: 10px; font-weight: 600; opacity: .6; }
+.btn-bloc.complet { outline: 3px solid var(--groc); }
+.btn-bloc.complet .bloc-barra > span { background: var(--groc); }
+.btn-bloc.infinit { background: linear-gradient(150deg, #ffe9a8, #ffd34d); color: #6b4d00; }
+#btn-tornar-blocs { align-self: center; font-size: 15px; margin-bottom: 6px; }
+
+.btn-nivell {
+  width: 56px; height: 56px;
+  border: none;
+  border-radius: 14px;
+  background: var(--crema);
+  color: var(--verd-fosc);
+  font-size: 20px;
   font-weight: 800;
   box-shadow: 0 4px 0 rgba(0,0,0,.25);
   cursor: pointer;
@@ -140,7 +212,8 @@ html, body {
   display: flex;
   justify-content: center;
   gap: 10px;
-  padding: 8px 10px;
+  /* una mica més d'aire per separar la baralla (a dalt) i les columnes (a sota) */
+  padding: 16px 10px 14px;
 }
 
 .fundacio {
@@ -208,7 +281,7 @@ html, body {
   display: flex;
   justify-content: center;
   gap: 8px;
-  padding: 6px 8px;
+  padding: 12px 8px 6px;
   overflow: hidden;
 }
 
@@ -391,6 +464,100 @@ html, body {
   animation: pols .45s ease;
   display: inline-block;
 }
+
+/* ===== TERMÒMETRE DE RISC (a baix a l'esquerra) ===== */
+#multa-widget {
+  position: absolute;
+  left: 12px;
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 40;
+}
+/* un sol "bloc negre": flama+número a dalt, tres punts a sota */
+#multa-widget .mw-block {
+  background: rgba(0,0,0,.28);
+  border-radius: 16px;
+  padding: 7px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+#mw-punts {
+  display: flex;
+  gap: 5px;
+}
+#mw-punts i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.25);
+  transition: background .25s ease;
+}
+#multa-widget .mw-label {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+#btn-multa-info {
+  width: 28px; height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0,0,0,.28);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  font-style: italic;
+  font-family: Georgia, "Times New Roman", serif;
+  cursor: pointer;
+}
+#btn-multa-info:active { background: rgba(0,0,0,.45); }
+#multa-widget .mw-flama {
+  display: inline-block;
+  line-height: 1;
+  transition: font-size .3s ease;
+  filter: drop-shadow(0 0 4px rgba(255,90,0,.5));
+}
+#multa-widget.max .mw-flama { animation: polsMulta 1s ease-in-out infinite; }
+@keyframes polsMulta { 50% { opacity: .55; } }
+
+/* ===== WIDGET DE COMODINS (a baix a la dreta) ===== */
+#comodins-widget {
+  position: absolute;
+  right: 12px;
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 40;
+}
+#comodins-widget .cw-comptador {
+  background: rgba(0,0,0,.28);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 14px;
+}
+#comodins-widget .cw-comptador b { color: var(--groc); }
+#btn-comodins-info {
+  width: 28px; height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0,0,0,.28);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  font-style: italic;
+  font-family: Georgia, "Times New Roman", serif;
+  cursor: pointer;
+}
+#btn-comodins-info:active { background: rgba(0,0,0,.45); }
 
 /* ===== MISSATGE FLOTANT ===== */
 #missatge-flotant {

@@ -19,7 +19,14 @@
 if (window.FAMILIES_EXTRA) Object.assign(FAMILIES, window.FAMILIES_EXTRA);
 const EDICIO_ID = window.EDICIO_ID || "amics";
 const RUTA_ARREL = window.RUTA_ARREL || "";
-const VERSIO_JOC = "v29"; // mantenir sincronitzada amb sw.js
+const VERSIO_JOC = "v30"; // mantenir sincronitzada amb sw.js
+// comodins 🔍 per defecte segons el bloc (es pot fixar per nivell amb comodins: N):
+// Tutorial i Normal en tenen 5; Difícil i Infinit, 3.
+function comodinsPerDefecte(idx, infinit) {
+  if (infinit) return 3;
+  const b = rangsBlocs().find((x) => idx >= x.start && idx < x.end);
+  return b && b.id === "dificil" ? 3 : 5;
+}
 
 // ---------- utilitats ----------
 const $ = (sel) => document.querySelector(sel);
@@ -94,10 +101,8 @@ window.trampa = {
   moviments(n) { estat.moviments = n; renderitza(); }
 };
 
-function nouNivell(idx) {
-  const niv = LEVELS[idx];
-
-  // construir la baralla: paraules + 1 carta mestra per família
+// nucli compartit: construeix la partida a partir d'una config de nivell
+function iniciaPartida(niv, idx, infinit) {
   const baralla = [];
   const necessitats = {};
   niv.families.forEach((f) => {
@@ -109,7 +114,6 @@ function nouNivell(idx) {
   });
   const barrejada = barreja(baralla);
 
-  // repartir columnes
   const columnes = niv.columnes.map((quantes) => {
     const col = barrejada.splice(0, quantes);
     if (col.length) col[col.length - 1].destapada = true;
@@ -118,7 +122,10 @@ function nouNivell(idx) {
 
   estat = {
     nivellIdx: idx,
+    infinit: !!infinit,
+    nomNivell: niv.nom,
     moviments: niv.moviments,
+    comodins: niv.comodins != null ? niv.comodins : comodinsPerDefecte(idx, infinit),
     columnes,
     pila: barrejada, // la resta va a la pila de robar
     descart: [],
@@ -137,11 +144,62 @@ function nouNivell(idx) {
   $("#modal").classList.add("amagada");
   calculaMides();
   renderitza();
+}
 
+function nouNivell(idx) {
+  comptaIntent(idx);
+  iniciaPartida(LEVELS[idx], idx, false);
   if (idx === 0 && !localStorage.getItem(clau("pista"))) {
     localStorage.setItem(clau("pista"), "1");
     setTimeout(() => missatge("Arrossega les cartes 👑 a un espai de dalt per obrir una col·lecció", 4000), 600);
   }
+}
+
+// ---------- intents per bloc ----------
+function comptaIntent(idx) {
+  const b = rangsBlocs().find((x) => idx >= x.start && idx < x.end);
+  if (!b) return;
+  const d = JSON.parse(localStorage.getItem(clau("intents")) || "{}");
+  d[b.id] = (d[b.id] || 0) + 1;
+  localStorage.setItem(clau("intents"), JSON.stringify(d));
+}
+function intentsBloc(id) {
+  return (JSON.parse(localStorage.getItem(clau("intents")) || "{}"))[id] || 0;
+}
+
+// ---------- mode infinit: nivell aleatori, sempre dificultat experta ----------
+function generaNivellRandom() {
+  // Disseny del mode infinit: MOLTS espais (6) i columnes curtes perquè
+  // quedar encallat per mala sort (cartes amagades) sigui raríssim, però
+  // marge de moviments MOLT JUST (factor 1.55) perquè cada error de
+  // família es pagui caríssim. Moltes famílies (8-9) = molta confusió.
+  const nFam = 8 + Math.floor(Math.random() * 2); // 8-9 famílies
+  const triades = [];
+  const usades = new Set();
+  for (const id of barreja(Object.keys(FAMILIES))) {
+    if (triades.length >= nFam) break;
+    const fam = FAMILIES[id];
+    if (fam.paraules.length < 5) continue;
+    // evita col·lisions de paraules entre famílies del mateix nivell
+    if (fam.paraules.some((p) => usades.has(p))) continue;
+    fam.paraules.forEach((p) => usades.add(p));
+    triades.push({ id, n: Math.min(5 + Math.floor(Math.random() * 2), fam.paraules.length, 9) });
+  }
+  const F = triades.length;
+  const cartes = triades.reduce((s, f) => s + f.n, 0) + F;
+  return {
+    nom: "Nivell infinit",
+    moviments: Math.round((cartes * 1.55) / 2) * 2, // marge molt just: els errors maten
+    espais: 6,                                       // molts espais: rarament t'encalles per sort
+    win_ratio: 0.45,
+    families: triades,
+    columnes: [3, 4, 4, 5, 5, 6, 6]                  // moltes columnes curtes: menys cartes amagades
+  };
+}
+
+function nouNivellInfinit() {
+  iniciaPartida(generaNivellRandom(), null, true);
+  setTimeout(() => missatge("♾️ Mode infinit: nivell aleatori a dificultat experta 🔥", 3500), 500);
 }
 
 // ---------- historial (desfer) ----------
@@ -314,7 +372,7 @@ function marcaPenalitzacio() {
 // retorna el cost aplicat, per mostrar-lo al missatge
 function penalitza() {
   estat.errors = (estat.errors || 0) + 1;
-  const cost = 1 + Math.floor((estat.errors - 1) / 3);
+  const cost = Math.min(5, 1 + Math.floor((estat.errors - 1) / 3)); // mai més de 5 per error
   estat.moviments -= cost;
   renderitza();
   marcaPenalitzacio();
@@ -369,27 +427,43 @@ function comprovaFinal() {
   if (estat.acabat) return;
   if (estat.recollides >= estat.totalCartes) {
     estat.acabat = true;
-    const sup = Math.max(nivellsSuperats(), estat.nivellIdx + 1);
-    localStorage.setItem(clau("progres"), String(sup));
+    if (estat.infinit) {
+      const r = parseInt(localStorage.getItem(clau("inf_ratxa")) || "0", 10) + 1;
+      localStorage.setItem(clau("inf_ratxa"), String(r));
+      const rec = Math.max(r, parseInt(localStorage.getItem(clau("inf_record")) || "0", 10));
+      localStorage.setItem(clau("inf_record"), String(rec));
+    } else {
+      // progrés per bloc: nombre de nivells completats dins del bloc
+      const b = rangsBlocs().find((x) => estat.nivellIdx >= x.start && estat.nivellIdx < x.end);
+      if (b) {
+        const pos = estat.nivellIdx - b.start + 1; // quants completats fins aquí
+        const abans = progresBloc(b.id);
+        desaProgresBloc(b.id, pos);
+        // en completar el Normal es desbloquegen Difícil i Infinit:
+        // reiniciem el comptador d'intents del difícil (comencen de zero)
+        if (b.id === "normal" && abans < b.mida && pos >= b.mida) {
+          const d = JSON.parse(localStorage.getItem(clau("intents")) || "{}");
+          d.dificil = 0;
+          localStorage.setItem(clau("intents"), JSON.stringify(d));
+        }
+      }
+    }
     setTimeout(() => mostraModal(true), 800);
   } else if (estat.moviments <= 0) {
     estat.acabat = true;
+    if (estat.infinit) localStorage.setItem(clau("inf_ratxa"), "0");
     setTimeout(() => mostraModal(false), 600);
   }
 }
 
 // ---------- modal ----------
 function mostraModal(victoria) {
-  const ultimNivell = estat.nivellIdx === LEVELS.length - 1;
-  $("#modal-emoji").textContent = victoria ? (ultimNivell ? "🐑👑🏆" : "🏆") : "😅";
-  $("#modal-titol").textContent = victoria
-    ? (ultimNivell ? "HAS COMPLETAT EL JOC!" : "Nivell superat!")
-    : "Sense moviments!";
-  $("#modal-text").textContent = victoria
-    ? (ultimNivell
-        ? "Totes les ovelles han trobat la seva parella. Ets oficialment una llegenda de les paraules! 🎉 Si vols més nivells, envia una 🐑 per WhatsApp."
-        : `Has completat «${LEVELS[estat.nivellIdx].nom}» amb ${estat.moviments} moviments de marge.`)
-    : "T'has quedat sense moviments. Torna-ho a intentar!";
+  const inf = estat.infinit;
+  const idx = estat.nivellIdx;
+  const blocs = rangsBlocs();
+  const normal = blocs.find((b) => b.id === "normal");
+  const ultimNivell = !inf && idx === LEVELS.length - 1;
+  const acabaNormal = !inf && normal && idx + 1 === normal.end; // ha completat el Normal
 
   const botons = $("#modal-botons");
   botons.innerHTML = "";
@@ -400,9 +474,47 @@ function mostraModal(victoria) {
     b.onclick = fn;
     botons.appendChild(b);
   };
-  if (victoria && !ultimNivell) fes("Següent nivell ▶", "primari", () => nouNivell(estat.nivellIdx + 1));
-  if (!victoria) {
-    fes("Torna-ho a provar 🔄", "primari", () => nouNivell(estat.nivellIdx));
+
+  let emoji, titol, text;
+  if (victoria && acabaNormal) {
+    // SORPRESA: en acabar el Normal es revelen el Difícil i l'Infinit
+    emoji = "🔥🐑🔥";
+    titol = "S'HA OBERT EL MODE EXPERT!";
+    text = "Pensaves que ja ho havies vist tot? Doncs no. Has domat totes les ovelles fàcils... i ara s'obren dues bèsties: el MODE DIFÍCIL (ramat salvatge, paraules traïdores i marges sense pietat) i el ♾️ MODE INFINIT (nivells aleatoris infinits a dificultat experta). Només per a pastors de debò. Hi entres? 🐏💀";
+    fes("Vull patir 🔥", "primari", () => nouNivell(idx + 1));
+    fes("Ara no, gràcies 🏠", "secundari", vesAInici);
+  } else if (victoria && ultimNivell) {
+    // final del joc
+    emoji = "🐑👑🏆";
+    titol = "HAS DOMAT TOTES LES OVELLES!";
+    text = "Has completat els 55 nivells. Ets oficialment una LLEGENDA de les paraules! 🎉 Encara tens el ♾️ MODE INFINIT esperant-te, amb nivells aleatoris fins que el cap digui prou.";
+    fes("Mode infinit ♾️", "primari", nouNivellInfinit);
+    fes("Inici 🏠", "secundari", vesAInici);
+  } else if (inf && victoria) {
+    const r = parseInt(localStorage.getItem(clau("inf_ratxa")) || "0", 10);
+    const rec = parseInt(localStorage.getItem(clau("inf_record")) || "0", 10);
+    emoji = "♾️🔥";
+    titol = "Ratxa: " + r + "!";
+    text = `Nivell infinit superat amb ${estat.moviments} de marge. Ratxa actual: ${r} · Rècord: ${rec}.`;
+    fes("Un altre ▶", "primari", nouNivellInfinit);
+    fes("Inici 🏠", "secundari", vesAInici);
+  } else if (inf && !victoria) {
+    emoji = "😅";
+    titol = "S'ha trencat la ratxa!";
+    text = "Sense moviments. El mode infinit no perdona... Tornem-hi?";
+    fes("Un altre ▶", "primari", nouNivellInfinit);
+    fes("Inici 🏠", "secundari", vesAInici);
+  } else if (victoria) {
+    emoji = "🏆";
+    titol = "Nivell superat!";
+    text = `Has completat «${estat.nomNivell}» amb ${estat.moviments} moviments de marge.`;
+    fes("Següent nivell ▶", "primari", () => nouNivell(idx + 1));
+    fes("Inici 🏠", "secundari", vesAInici);
+  } else {
+    emoji = "😅";
+    titol = "Sense moviments!";
+    text = "T'has quedat sense moviments. Torna-ho a intentar!";
+    fes("Torna-ho a provar 🔄", "primari", () => nouNivell(idx));
     // easter egg: no afegeix res, només demana un Bizum
     const bizum = document.createElement("button");
     bizum.className = "btn-modal secundari";
@@ -414,15 +526,48 @@ function mostraModal(victoria) {
       bizum.style.opacity = ".6";
     };
     botons.appendChild(bizum);
+    fes("Inici 🏠", "secundari", vesAInici);
   }
-  if (victoria && ultimNivell) fes("Torna a l'inici 🏠", "primari", vesAInici);
-  else fes("Inici 🏠", "secundari", vesAInici);
+
+  $("#modal-emoji").textContent = emoji;
+  $("#modal-titol").textContent = titol;
+  $("#modal-text").textContent = text;
   $("#modal").classList.remove("amagada");
 }
 
 // ---------- pantalla d'inici ----------
-function nivellsSuperats() {
-  return parseInt(localStorage.getItem(clau("progres")) || "0", 10);
+// progrés PER BLOC: { tutorial, normal, dificil } = nivells completats
+function progresBlocs() {
+  return JSON.parse(localStorage.getItem(clau("prog")) || "{}");
+}
+function progresBloc(id) {
+  return progresBlocs()[id] || 0;
+}
+function desaProgresBloc(id, n) {
+  const p = progresBlocs();
+  if (n > (p[id] || 0)) { p[id] = n; localStorage.setItem(clau("prog"), JSON.stringify(p)); }
+}
+// Normal i Tutorial sempre desbloquejats; Difícil i Infinit, només
+// quan s'ha completat tot el bloc Normal.
+function normalComplet() {
+  const n = rangsBlocs().find((b) => b.id === "normal");
+  return n ? progresBloc("normal") >= n.mida : false;
+}
+function blocDesbloquejat(b) {
+  if (adminActiu()) return true;
+  return b.id === "tutorial" || b.id === "normal" || normalComplet();
+}
+function infinitDesbloquejat() {
+  return adminActiu() || normalComplet();
+}
+// nivell on porta el botó "Continua": el primer pendent d'un bloc desbloquejat
+function nivellContinua() {
+  for (const b of rangsBlocs()) {
+    if (!blocDesbloquejat(b)) continue;
+    const fets = progresBloc(b.id);
+    if (fets < b.mida) return b.start + fets;
+  }
+  return null;
 }
 
 function vesAInici() {
@@ -436,21 +581,100 @@ function adminActiu() {
   return localStorage.getItem(clau("admin")) === "1";
 }
 
-function pintaGraellaNivells() {
-  const graella = $("#graella-nivells");
-  graella.innerHTML = "";
-  const superats = nivellsSuperats();
-  const admin = adminActiu();
-  LEVELS.forEach((niv, i) => {
-    const b = document.createElement("button");
-    b.className = "btn-nivell";
-    const obert = admin || i <= superats;
-    if (i < superats) b.classList.add("superat");
-    if (!obert) b.classList.add("bloquejat");
-    b.innerHTML = !obert ? "🔒" : `${i + 1}<small>${i < superats ? "⭐" : ""}</small>`;
-    if (obert) b.onclick = () => nouNivell(i);
-    graella.appendChild(b);
+// rangs dels blocs (índexs 0-based, end exclusiu) a partir de la mida
+function rangsBlocs() {
+  let acc = 0;
+  return (typeof BLOCS !== "undefined" ? BLOCS : []).map((b) => {
+    const start = acc; acc += b.mida || 0;
+    return { ...b, start, end: acc };
   });
+}
+
+// null = pantalla dels 3 botons de bloc; nombre = índex del bloc obert
+let blocSeleccionat = null;
+
+function pintaGraellaNivells() {
+  const menu = $("#menu-blocs");
+  const graella = $("#graella-nivells");
+  const btnTornar = $("#btn-tornar-blocs");
+  const admin = adminActiu();
+  const blocs = rangsBlocs();
+  menu.innerHTML = "";
+  graella.innerHTML = "";
+
+  if (blocSeleccionat === null) {
+    // ----- pantalla principal: hero + targetes desbloquejades -----
+    menu.classList.remove("amagada");
+    graella.classList.add("amagada");
+    btnTornar.classList.add("amagada");
+
+    // HERO "Continua": salta directament al següent nivell pendent
+    const seg = nivellContinua();
+    if (seg !== null) {
+      const bSeg = blocs.find((b) => seg >= b.start && seg < b.end);
+      const hero = document.createElement("button");
+      hero.className = "btn-continua";
+      hero.innerHTML =
+        `<span class="cont-titol">▶ Continua</span>` +
+        `<span class="cont-sub">Nivell ${seg + 1}${bSeg && bSeg.id === "dificil" ? " · " + bSeg.nom : ""}</span>`;
+      hero.onclick = () => nouNivell(seg);
+      menu.appendChild(hero);
+    }
+
+    // targetes de bloc: NOMÉS les desbloquejades (Normal sempre visible;
+    // Difícil amagat fins completar el Normal, perquè sigui sorpresa).
+    blocs.forEach((b, bi) => {
+      if (!blocDesbloquejat(b)) return;
+      const fets = progresBloc(b.id);
+      const pct = Math.round((100 * fets) / b.mida);
+      const btn = document.createElement("button");
+      btn.className = "btn-bloc";
+      if (fets >= b.mida) btn.classList.add("complet");
+      btn.innerHTML =
+        `<span class="bloc-emoji">${b.emoji}</span>` +
+        `<span class="bloc-info"><span class="bloc-nom">${b.nom}</span>` +
+        `<span class="bloc-barra"><span style="width:${pct}%"></span></span></span>` +
+        `<span class="bloc-prog">${fets}/${b.mida}<small>${intentsBloc(b.id)} intents</small></span>`;
+      btn.onclick = () => { blocSeleccionat = bi; pintaGraellaNivells(); };
+      menu.appendChild(btn);
+    });
+
+    // mode infinit: desbloquejat en completar el Normal
+    if (infinitDesbloquejat()) {
+      const ratxa = parseInt(localStorage.getItem(clau("inf_ratxa")) || "0", 10);
+      const record = parseInt(localStorage.getItem(clau("inf_record")) || "0", 10);
+      const inf = document.createElement("button");
+      inf.className = "btn-bloc infinit";
+      inf.innerHTML =
+        `<span class="bloc-emoji">♾️</span>` +
+        `<span class="bloc-info"><span class="bloc-nom">Mode infinit</span>` +
+        `<span class="bloc-sub">Aleatori · dificultat experta</span></span>` +
+        `<span class="bloc-prog">🔥${ratxa}<small>rècord ${record}</small></span>`;
+      inf.onclick = () => nouNivellInfinit();
+      menu.appendChild(inf);
+    }
+  } else {
+    // ----- graella de nivells del bloc seleccionat -----
+    menu.classList.add("amagada");
+    graella.classList.remove("amagada");
+    btnTornar.classList.remove("amagada");
+    const b = blocs[blocSeleccionat];
+    const fets = progresBloc(b.id);
+    btnTornar.innerHTML = `← ${b.emoji} ${b.nom}`;
+    for (let i = b.start; i < b.end && i < LEVELS.length; i++) {
+      const pos = i - b.start;            // posició dins del bloc (0-based)
+      const obert = admin || pos <= fets; // el primer sempre obert; després, seqüencial
+      const completat = pos < fets;
+      const cell = document.createElement("button");
+      cell.className = "btn-nivell";
+      if (completat) cell.classList.add("superat");
+      if (!obert) cell.classList.add("bloquejat");
+      cell.innerHTML = !obert ? "🔒" : `${i + 1}<small>${completat ? "⭐" : ""}</small>`;
+      if (obert) cell.onclick = () => nouNivell(i);
+      graella.appendChild(cell);
+    }
+  }
+
   $("#btn-admin").textContent = admin
     ? `🔧 Mode admin: ACTIVAT · ${VERSIO_JOC} · edició ${EDICIO_ID}`
     : "🔧 Mode admin";
@@ -458,11 +682,15 @@ function pintaGraellaNivells() {
 }
 
 // ---------- mides ----------
+let ampleActual = 78; // amplada de carta vigent (px), per dimensionar la lletra
+
 function calculaMides() {
-  const niv = LEVELS[estat ? estat.nivellIdx : 0];
-  const ncols = Math.max(niv.columnes.length, niv.espais);
+  const ncols = estat
+    ? Math.max(estat.columnes.length, estat.fundacions.length)
+    : Math.max(LEVELS[0].columnes.length, LEVELS[0].espais);
   const vw = document.documentElement.clientWidth;
   const ample = Math.max(54, Math.min(84, Math.floor((vw - 20 - (ncols - 1) * 8) / ncols)));
+  ampleActual = ample;
   const root = document.documentElement.style;
   root.setProperty("--ample-carta", ample + "px");
   root.setProperty("--alt-carta", Math.round(ample * 1.32) + "px");
@@ -471,13 +699,31 @@ function calculaMides() {
 // ---------- renderitzat ----------
 function renderitza() {
   if (!estat) return;
-  const niv = LEVELS[estat.nivellIdx];
-
   // capçalera
-  $("#nom-nivell").textContent = `Nivell ${estat.nivellIdx + 1} · ${niv.nom}`;
+  $("#nom-nivell").textContent = estat.infinit
+    ? `♾️ ${estat.nomNivell}`
+    : `Nivell ${estat.nivellIdx + 1} · ${estat.nomNivell}`;
   const cm = $("#comptador-moviments");
   cm.innerHTML = `Moviments: <b>${estat.moviments}</b>`;
   cm.classList.toggle("alerta", estat.moviments <= 5);
+  const cw = $("#comodins-compte");
+  if (cw) cw.textContent = estat.comodins;
+  // indicador de risc: 3 punts que s'omplen amb cada error; quan els 3
+  // són del mateix color, la multa puja i recomencen amb el color següent
+  // (groc → taronja → vermell → vermell fort), amb la flama i el −X.
+  const punts = document.querySelectorAll("#mw-punts i");
+  if (punts.length) {
+    const errs = estat.errors || 0;
+    const cost = Math.min(5, 1 + Math.floor(errs / 3)); // cost del pròxim error
+    const colors = ["#ffd34d", "#ff9f1c", "#ff5246", "#a30f0f"]; // groc→taronja→vermell→vermell fort
+    let tier, plens;
+    if (cost >= 5) { tier = 3; plens = 3; }            // topall: 3 punts vermell fort
+    else if (errs === 0) { tier = 0; plens = 0; }
+    else { tier = Math.min(3, Math.floor((errs - 1) / 3)); plens = ((errs - 1) % 3) + 1; }
+    punts.forEach((d, k) => { d.style.background = k < plens ? colors[tier] : "rgba(255,255,255,.25)"; });
+    $("#mw-label").innerHTML = `<span class="mw-flama" style="font-size:${10 + cost * 3}px">🔥</span>−${cost}`;
+    $("#multa-widget").classList.toggle("max", cost >= 5);
+  }
   $("#btn-desfer").disabled = !estat.historial.length;
 
   pintaFundacions();
@@ -485,15 +731,16 @@ function renderitza() {
   pintaPeu();
 }
 
-// mida de lletra segons la paraula més llarga, perquè no es talli
-// a les cartes estretes del mòbil
+// mida de lletra calculada segons l'AMPLADA REAL de la carta (que varia
+// amb el nombre de columnes) i la paraula més llarga, perquè la paraula
+// càpiga en una línia sempre que es pugui i mai surti tallada.
 function estilParaula(text) {
-  const llarg = Math.max(...String(text).split(/\s+/).map(w => w.length));
-  const total = String(text).length;
-  if (llarg <= 7 && total <= 12) return "";
-  if (llarg <= 9 && total <= 16) return ' style="font-size:10.5px"';
-  if (llarg <= 12 && total <= 22) return ' style="font-size:9.5px"';
-  return ' style="font-size:8.5px"';
+  const llarg = Math.max(...String(text).split(/\s+/).map(w => w.length)) || 1;
+  const usable = ampleActual - 10;            // amplada interior de la carta
+  const ampleLletra = 0.62;                    // factor d'amplada de la lletra negreta
+  let font = Math.floor(usable / (ampleLletra * llarg));
+  font = Math.max(8, Math.min(13, font));      // entre 8 i 13 px
+  return ` style="font-size:${font}px"`;
 }
 
 // contingut d'una carta: les paraules NO mostren la família (l'has d'endevinar!)
@@ -623,25 +870,49 @@ function iniciBloc(origenBase) {
   return { tipus: "columna", col: origenBase.col, idx: i };
 }
 
+// consulta la definició d'una carta (comodí 🔍). Gasta 1 comodí.
+function consultaDefinicio(carta) {
+  const paraula = carta.mestra ? FAMILIES[carta.familia].nom : carta.paraula;
+  const def = (typeof DEFINICIONS !== "undefined" && DEFINICIONS[paraula]) || null;
+  if (carta.mestra) { missatge(`👑 ${paraula}`); return; } // la mestra ja diu la família: gratis
+  if (!def) { missatge(`📖 «${paraula}»: sense definició`); return; }
+  if (estat.comodins <= 0) { missatge("🔍 No et queden comodins en aquest nivell!"); return; }
+  estat.comodins--;
+  renderitza();
+  missatge(`🔍 ${paraula}: ${def}`, 4500);
+}
+
 function registraPunter(el, origenBase) {
   el.addEventListener("pointerdown", (e) => {
     if (estat.acabat) return;
     e.preventDefault();
+    // carta concreta que s'ha tocat (per a la consulta de definició)
+    const cartaClic = origenBase.tipus === "columna"
+      ? estat.columnes[origenBase.col][origenBase.idx]
+      : estat.descart[estat.descart.length - 1];
     const origen = iniciBloc(origenBase);
     const cartes = agafaCartes(origen);
-    if (!cartes) { el.classList.add("no-no"); setTimeout(() => el.classList.remove("no-no"), 350); return; }
     // capturar el punter: així el dit pot sortir de la carta sense perdre el gest
     try { el.setPointerCapture(e.pointerId); } catch (err) { /* navegadors antics */ }
     // l'element d'on parteix el fantasma és la primera carta del bloc
-    const elBloc = origen.tipus === "columna"
+    const elBloc = (cartes && origen.tipus === "columna")
       ? document.querySelector(`.carta[data-col="${origen.col}"][data-idx="${origen.idx}"]`) || el
       : el;
     drag = {
-      origen, cartes,
+      origen, cartes: cartes || null,
       x0: e.clientX, y0: e.clientY,
       el: elBloc, fantasma: null,
-      rect: elBloc.getBoundingClientRect()
+      rect: elBloc.getBoundingClientRect(),
+      timer: null
     };
+    // pulsació llarga (450 ms sense moure) → consultar definició
+    drag.timer = setTimeout(() => {
+      if (!drag) return;
+      if (drag.fantasma) drag.fantasma.remove();
+      drag = null;
+      mostraOcults();
+      consultaDefinicio(cartaClic);
+    }, 450);
   });
 }
 
@@ -651,6 +922,7 @@ document.addEventListener("pointercancel", () => {
   if (!drag) return;
   const d = drag;
   drag = null;
+  if (d.timer) clearTimeout(d.timer);
   if (d.fantasma) d.fantasma.remove();
   mostraOcults();
   renderitza();
@@ -664,6 +936,9 @@ document.addEventListener("contextmenu", (e) => {
 document.addEventListener("pointermove", (e) => {
   if (!drag) return;
   const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+  // moure el dit cancel·la la pulsació llarga (és un arrossegament)
+  if (drag.timer && Math.hypot(dx, dy) > 8) { clearTimeout(drag.timer); drag.timer = null; }
+  if (!drag.cartes) return; // carta no arrossegable: només admetia long-press
   if (!drag.fantasma && Math.hypot(dx, dy) > 8) creaFantasma(e);
   if (drag.fantasma) {
     drag.fantasma.style.left = (drag.rect.left + dx) + "px";
@@ -675,8 +950,13 @@ document.addEventListener("pointerup", (e) => {
   if (!drag) return;
   const d = drag;
   drag = null;
+  if (d.timer) clearTimeout(d.timer);
 
-  if (!d.fantasma) return; // un toc sense arrossegar no fa res
+  if (!d.fantasma) {
+    // toc curt: si la carta no es podia agafar, fes el gest de "no"
+    if (!d.cartes && d.el) { d.el.classList.add("no-no"); setTimeout(() => d.el.classList.remove("no-no"), 350); }
+    return; // un toc sense arrossegar no mou res
+  }
 
   // ha estat un arrossegament
   d.fantasma.remove();
@@ -739,6 +1019,15 @@ $("#pila-robar").addEventListener("click", accioRoba);
 $("#btn-desfer").addEventListener("click", desfer);
 $("#btn-reiniciar").addEventListener("click", () => nouNivell(estat.nivellIdx));
 $("#btn-inici").addEventListener("click", vesAInici);
+$("#btn-tornar-blocs").addEventListener("click", () => { blocSeleccionat = null; pintaGraellaNivells(); });
+$("#btn-multa-info").addEventListener("click", () => {
+  const cost = estat ? Math.min(5, 1 + Math.floor((estat.errors || 0) / 3)) : 1;
+  missatge(`⚠️ Cada error de família resta moviments. Els 3 punts s'omplen amb cada error; quan s'omplen, la multa puja (−1 → −2 → −3 → fins a −5) i canvien de color. Ara el pròxim error et costaria −${cost}.`, 5500);
+});
+$("#btn-comodins-info").addEventListener("click", () => {
+  const queden = estat ? ` Te'n queden ${estat.comodins}.` : "";
+  missatge("🔍 Comodí: mantén premuda una carta (click & hold) i et dirà la seva definició, per ajudar-te a endevinar la família. Cada consulta gasta un comodí." + queden, 5500);
+});
 $("#btn-admin").addEventListener("click", () => {
   if (adminActiu()) {
     localStorage.setItem(clau("admin"), "0"); // desactivar no demana contrasenya
@@ -773,7 +1062,11 @@ $("#btn-tancar-instruccions").addEventListener("click", () => {
 });
 $("#btn-esborrar-progres").addEventListener("click", () => {
   if (confirm("Segur que vols esborrar el progrés?")) {
-    localStorage.removeItem(clau("progres"));
+    localStorage.removeItem(clau("prog"));
+    localStorage.removeItem(clau("intents"));
+    localStorage.removeItem(clau("inf_ratxa"));
+    localStorage.removeItem(clau("inf_record"));
+    blocSeleccionat = null;
     pintaGraellaNivells();
   }
 });
@@ -781,6 +1074,13 @@ window.addEventListener("resize", () => { if (estat) { calculaMides(); renderitz
 
 // ---------- arrencada ----------
 (function arrenca() {
+  // REINICI ÚNIC en estrenar la versió nova (nou model de progrés per blocs):
+  // tothom comença de 0 i s'esborra el progrés antic perquè no quedi brossa.
+  if (!localStorage.getItem(clau("reset_v2"))) {
+    ["progres", "prog", "intents", "inf_ratxa", "inf_record"].forEach((k) => localStorage.removeItem(clau(k)));
+    localStorage.setItem(clau("reset_v2"), "1");
+  }
+
   const errors = validaConfiguracio();
   if (errors.length) {
     alert("⚠️ Hi ha errors a la configuració:\n\n" + errors.join("\n"));
