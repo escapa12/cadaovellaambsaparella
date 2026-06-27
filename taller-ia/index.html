@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Com hem fet un joc xerrant amb una IA · Taller per a amics</title>
+<style>
+  :root{
+    --verd:#1e8a4c; --verd-fosc:#15693a; --crema:#fdf6e3; --crema2:#efe3c2;
+    --groc:#ffd34d; --blau:#4a90d9; --granat:#a30f0f; --tinta:#3a2f18;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:#fff; line-height:1.6;
+    background:var(--verd);
+    background-image:radial-gradient(circle at 50% -10%, #27a35d 0%, var(--verd) 55%, var(--verd-fosc) 120%);
+    background-attachment:fixed;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:24px 18px 80px}
+  /* HERO */
+  header.hero{text-align:center;padding:46px 10px 30px}
+  .ovelles{font-size:46px;letter-spacing:6px}
+  header.hero h1{font-size:34px;line-height:1.1;margin:10px 0;text-shadow:0 3px 0 rgba(0,0,0,.25)}
+  header.hero h1 span{color:var(--groc)}
+  .lema{opacity:.92;font-size:17px;max-width:560px;margin:0 auto}
+  .pill{display:inline-block;background:rgba(0,0,0,.25);border-radius:30px;padding:6px 16px;font-size:13px;font-weight:700;margin-top:18px}
+  /* TARGETES */
+  section.card{
+    background:var(--crema); color:var(--tinta);
+    border-radius:22px; padding:26px 24px; margin:18px 0;
+    box-shadow:0 6px 0 rgba(0,0,0,.22);
+  }
+  section.card h2{font-size:23px;color:var(--verd-fosc);margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  section.card h3{font-size:17px;color:var(--granat);margin:18px 0 4px}
+  section.card p{margin:8px 0}
+  section.card b{color:var(--verd-fosc)}
+  .kicker{text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:800;color:#b08900}
+  ul.net{list-style:none;margin:10px 0}
+  ul.net li{position:relative;padding:6px 0 6px 30px}
+  ul.net li::before{content:"🐑";position:absolute;left:0;top:5px}
+  /* PROMPTS */
+  .prompt{
+    background:#fffaf0;border-left:5px solid var(--blau);border-radius:10px;
+    padding:12px 14px;margin:10px 0;font-size:15px;
+  }
+  .prompt::before{content:"💬 ";opacity:.7}
+  .prompt .q{font-style:italic}
+  .prompt .why{display:block;margin-top:6px;font-size:13px;color:#6b5a39;font-style:normal}
+  .prompt .why b{color:var(--blau)}
+  /* PASSOS */
+  ol.passos{counter-reset:p;list-style:none;margin-top:8px}
+  ol.passos li{counter-increment:p;position:relative;padding:10px 0 10px 48px;border-bottom:1px dashed #e0d4b0}
+  ol.passos li:last-child{border-bottom:none}
+  ol.passos li::before{
+    content:counter(p);position:absolute;left:0;top:8px;
+    width:32px;height:32px;border-radius:50%;background:var(--verd);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:800;
+  }
+  /* CHIPS solucions */
+  .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:12px}
+  @media(min-width:620px){.grid{grid-template-columns:1fr 1fr}}
+  .sol{background:#fffaf0;border:2px solid var(--crema2);border-radius:14px;padding:14px 16px}
+  .sol .em{font-size:26px}
+  .sol h4{color:var(--verd-fosc);margin:4px 0 2px;font-size:16px}
+  .sol p{font-size:14px;margin:4px 0 0}
+  code{background:#efe3c2;border-radius:6px;padding:1px 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;color:#6b4d00}
+  .tip{background:rgba(255,211,77,.16);border:1px solid rgba(255,211,77,.5);border-radius:12px;padding:12px 14px;margin-top:14px;color:#fff}
+  .tip b{color:var(--groc)}
+  a.boto{display:inline-block;background:var(--groc);color:#6b4d00;font-weight:800;text-decoration:none;padding:13px 24px;border-radius:16px;box-shadow:0 4px 0 rgba(0,0,0,.25);margin-top:6px}
+  footer{text-align:center;opacity:.8;font-size:13px;padding:30px 10px}
+  .destacat{font-size:19px;font-weight:700;text-align:center;margin:6px 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="ovelles">🐑🤖🐑</div>
+    <h1>Hem fet un joc sencer<br><span>només xerrant amb una IA</span></h1>
+    <p class="lema">Aquesta és la història de com va néixer <b>«Cada Ovella amb sa Parella»</b> — i una guia perquè tu, que t'inicies en la IA, vegis que no cal saber programar: cal saber <b>explicar què vols</b>.</p>
+    <div class="pill">Taller exprés per a amics · sense codi a la vista</div>
+  </header>
+
+  <section class="card">
+    <span class="kicker">El punt de partida</span>
+    <h2>🎯 La idea boja</h2>
+    <p>L'Arnau volia un joc de cartes en català (un mix de solitari i el joc de les famílies). No el va programar línia a línia: <b>li va anar dient a la IA què volia</b>, en llenguatge normal, i la IA escrivia el codi, el provava i el publicava.</p>
+    <p>El resultat: <b>55 nivells</b>, un mode infinit, definicions de centenars de paraules, un menú per blocs i un munt de detalls d'interfície. Tot conversant.</p>
+    <p class="destacat">👉 La feina humana no és teclejar codi: és <b>decidir, descriure i donar feedback</b>.</p>
+  </section>
+
+  <section class="card">
+    <span class="kicker">La clau de tot</span>
+    <h2>🗣️ Com parlar-li a la IA</h2>
+    <p>El secret no és saber paraules tècniques. És comunicar-te bé, com amb un company molt ràpid però que necessita context. Els hàbits que millor han funcionat:</p>
+    <ul class="net">
+      <li><b>Demana l'OBJECTIU, no la solució.</b> Digues «vull que perdre per mala sort sigui rar però que els errors es paguin car», no «posa 6 columnes». Deixa que la IA proposi el com.</li>
+      <li><b>Itera en petit.</b> Un canvi, el proves, dones feedback, següent. Millor que demanar-ho tot de cop.</li>
+      <li><b>Demana opcions.</b> «Proposa'm 3 dissenys de menú i ensenya-me'ls» abans de triar.</li>
+      <li><b>Dona feedback concret.</b> «Encara hi ha massa marge de moviments» és or: la IA sap exactament què afinar.</li>
+      <li><b>Demana que t'ho ENSENYI abans d'aplicar-ho</b> quan és gros: «mostra'm la taula de nivells abans d'implementar».</li>
+      <li><b>No passa res si no ho saps explicar perfecte.</b> Pots dir «si necessites més detalls, pregunta'm». La IA preguntarà.</li>
+    </ul>
+    <div class="tip">💡 <b>Truc d'or:</b> tracta la IA com algú que ho farà tot bé... si li dius prou bé QUÈ vols i PER A QUÈ. El 80% de la qualitat ve d'un bon encàrrec.</div>
+  </section>
+
+  <section class="card">
+    <span class="kicker">Exemples de veritat</span>
+    <h2>💬 Prompts reals d'aquest projecte</h2>
+    <p>Aquests són encàrrecs autèntics que van fer avançar el joc. Fixa't que quasi tots diuen <i>què</i> es vol, no <i>com</i> fer-ho:</p>
+
+    <h3>Posar una direcció clara</h3>
+    <div class="prompt"><span class="q">«Fes que el mode normal estigui desbloquejat des del principi, i que el difícil i l'infinit es bloquegin fins que s'acabi el normal.»</span><span class="why"><b>Per què funciona:</b> objectiu concret i mesurable.</span></div>
+    <div class="prompt"><span class="q">«No restis mai més de 5 moviments per error.»</span><span class="why"><b>Per què funciona:</b> una regla simple i inequívoca.</span></div>
+
+    <h3>Delegar feina creativa amb criteri</h3>
+    <div class="prompt"><span class="q">«Proposa 10-15 famílies de paraules més del mateix estil, però deixa-me-les revisar abans d'integrar-les.»</span><span class="why"><b>Per què funciona:</b> aprofita la IA per generar i es reserva el vistiplau.</span></div>
+    <div class="prompt"><span class="q">«Afegeix una definició a totes les paraules; per la NBA catalana posa el nom de l'equip real en anglès.»</span><span class="why"><b>Per què funciona:</b> tasca gran + un detall específic ben explicat.</span></div>
+
+    <h3>Definir una sensació, no una implementació</h3>
+    <div class="prompt"><span class="q">«Vull que al mode infinit sigui molt difícil perdre per mala sort, però que castigui molt els errors: el marge de moviments ha de ser molt just.»</span><span class="why"><b>Per què funciona:</b> descriu l'EXPERIÈNCIA desitjada; la IA tradueix això a espais, columnes i moviments... i ho comprova amb simulacions.</span></div>
+
+    <h3>Demanar idees quan no en tens</h3>
+    <div class="prompt"><span class="q">«Tens alguna idea per mostrar el cost creixent per error de forma gràfica i elegant?»</span><span class="why"><b>Per què funciona:</b> obre la porta a propostes; després es tria i s'afina.</span></div>
+
+    <h3>Feedback que afina</h3>
+    <div class="prompt"><span class="q">«He provat els nivells normals i molts tenen massa marge de moviments. Redueix-lo dràsticament sense afectar la dificultat.»</span><span class="why"><b>Per què funciona:</b> diagnòstic clar + restricció («sense afectar la dificultat»).</span></div>
+  </section>
+
+  <section class="card">
+    <span class="kicker">El mètode</span>
+    <h2>🔁 El procés que hem seguit</h2>
+    <ol class="passos">
+      <li><b>Idea o problema.</b> «Vull un mode infinit», «els marges són massa grans».</li>
+      <li><b>Proposta.</b> Quan és gros, la IA proposa el pla (estructura, taules, opcions) i l'Arnau el valida o el corregeix.</li>
+      <li><b>Implementació.</b> La IA escriu el codi i el comprova sola amb proves automàtiques.</li>
+      <li><b>Versió de proves.</b> Tot es publica primer a una pàgina <code>/test/</code> separada, perquè els jugadors reals no es vegin afectats.</li>
+      <li><b>El proves de veritat.</b> L'Arnau hi juga al mòbil i diu què canviaria.</li>
+      <li><b>Feedback → tornar a començar.</b> Cada volta el joc millora una mica. Quan tot està a punt, es publica per a tothom.</li>
+    </ol>
+    <div class="tip">🧪 <b>Idea important:</b> tenir una <b>versió de proves</b> a part és una xarxa de seguretat. Pots trastejar sense por de trencar el que ja funciona.</div>
+  </section>
+
+  <section class="card">
+    <span class="kicker">Sota el capó</span>
+    <h2>🛠️ Algunes solucions que vam fer servir</h2>
+    <p>Explicades fàcil, perquè vegis fins on es pot arribar conversant:</p>
+    <div class="grid">
+      <div class="sol">
+        <div class="em">🤖</div>
+        <h4>Un «bot» que juga sol</h4>
+        <p>Vam fer un programa que juga cada nivell <b>centenars de vegades</b> per comprovar que es pot guanyar i mesurar com de difícil és. Així s'ajusten els nivells amb dades, no a ull.</p>
+      </div>
+      <div class="sol">
+        <div class="em">⚖️</div>
+        <h4>Calibrar amb simulació</h4>
+        <p>Per treure el marge sobrant, un script mesura quants moviments gasta el bot per guanyar i fixa el límit just a sobre. Resultat: marges ajustats <b>sense fer els nivells impossibles</b>.</p>
+      </div>
+      <div class="sol">
+        <div class="em">♾️</div>
+        <h4>El mode infinit</h4>
+        <p>Genera nivells <b>aleatoris</b> barrejant famílies a l'atzar. Es va dissenyar amb molts espais (rarament t'encalles per sort) i marge molt just (els errors es paguen car).</p>
+      </div>
+      <div class="sol">
+        <div class="em">🔍</div>
+        <h4>Comodins de definició</h4>
+        <p>Mantén premuda una carta i et diu la seva definició, gastant un comodí. Petit detall que ajuda quan no saps de quina família és una paraula.</p>
+      </div>
+      <div class="sol">
+        <div class="em">🔥</div>
+        <h4>Indicador de risc visual</h4>
+        <p>Tres punts que s'omplen i canvien de color (groc → vermell) amb cada error, amb una flama que creix amb el càstig. Comunica la penalització <b>sense números pesats</b>.</p>
+      </div>
+      <div class="sol">
+        <div class="em">⚡</div>
+        <h4>«Skills» a mida</h4>
+        <p>Vam crear ordres reutilitzables (p. ex. un informe de l'estat de tots els nivells). Una <i>skill</i> és una recepta que la IA pot executar quan la hi demanes.</p>
+      </div>
+    </div>
+    <h3>Detalls d'UX que marquen la diferència</h3>
+    <ul class="net">
+      <li>Menú per <b>blocs</b> (Tutorial / Normal / Difícil) amb un botó «Continua» que et porta on ho vas deixar, perquè 55 nivells de cop no aclaparin.</li>
+      <li>La lletra de cada carta <b>s'ajusta a l'amplada</b> perquè cap paraula surti tallada al mòbil.</li>
+      <li>El mode difícil <b>no es revela</b> fins que acabes el normal: és una sorpresa amb un missatge divertit.</li>
+      <li>En estrenar versió nova, el progrés <b>es reinicia net</b> per a tothom de manera controlada.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <span class="kicker">Per emportar-te</span>
+    <h2>🚀 5 consells per començar tu</h2>
+    <ul class="net">
+      <li><b>Comença petit i concret.</b> Un objectiu clar val més que deu de vagues.</li>
+      <li><b>Parla d'experiència, no de tècnica.</b> «Que sigui divertit i ràpid» ja és una bona instrucció.</li>
+      <li><b>Demana proves abans de fiar-te.</b> «Com saps que funciona?» és una pregunta legítima.</li>
+      <li><b>Itera sense por.</b> Equivocar-se i corregir és el camí normal, no un fracàs.</li>
+      <li><b>Tu mantens el timó.</b> La IA proposa i executa; tu decideixes el gust i el rumb.</li>
+    </ul>
+    <p style="text-align:center;margin-top:18px">
+      <a class="boto" href="../">🐑 Anar a jugar</a>
+    </p>
+  </section>
+
+  <footer>
+    Fet amb molta conversa · «Cada Ovella amb sa Parella» · skapo productions
+  </footer>
+
+</div>
+</body>
+</html>
